@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+
+
+<head>
+
+<title>Find Your City</title>
+</head>
+
+<body>
+    <div class="title">Find Your City</div>
+    
+
+<link rel="stylesheet" type="text/css" href="style.css">
+<div id="xMenu"></div>
+<div id="yMenu"></div>
+<div id="zMenu"></div>
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<div id="bubbles">
+<div id="chartContainer">
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://dimplejs.org/dist/dimple.v2.1.2.min.js"></script>
+<script type="text/javascript">
+</script>
+</div>
+</div>
+<!--BAR CHART-->
+<div id="charts"></div>
+<div id="container">
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script>
+
+    /*
+var w = window,
+    width = w.innerWidth || e.clientWidth || g.clientWidth,
+    height = w.innerHeight|| e.clientHeight|| g.clientHeight;
+    */
+    
+var width = 1000,
+    height = 1000;
+
+var msvg = d3.select("#container").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+    
+var projection = d3.geo.mercator()
+        .scale(1900)
+        .translate([width * 8 / 2, height * 5 / 2]);
+    
+//MAP
+d3.json("alberta.json", function(error, alberta) {
+    if (error) return console.error(error);
+    
+    msvg.selectAll("path")
+           .data(alberta.features)
+           .enter()
+           .append("path")
+           .attr("d", d3.geo.path().projection(projection));
+});
+    
+    
+d3.json("cities.json", function(error, cities) {
+    if (error) return console.error(error);
+    
+    console.log(cities.features[0].geometry.coordinates[0]);
+    
+    msvg.selectAll("circle")
+           .data(cities.features)
+           .enter()
+           .append("circle")
+           .attr("cx", function(d) {
+                   return projection([
+                       d.geometry.coordinates[0],
+                       d.geometry.coordinates[1]
+                       ])[0];
+           })
+           .attr("cy", function(d) {
+                   return projection([
+                       d.geometry.coordinates[0],
+                       d.geometry.coordinates[1]
+                   ])[1];
+           }) 
+           .attr("r", 5)
+           .style("fill", "white")
+           .style("opacity", 0.75)
+            .on("mouseover", function(d) {
+                console.log("over");
+                d3.select(this).attr("r", 10);
+                d3.select(this).style("opacity", 0.95);
+                })
+            .on("mouseout", function(d) {
+                console.log("out");
+                d3.select(this).attr("r", 5);
+                d3.select(this).style("opacity", 0.75);
+            });
+    
+});
+    
+    //Charts are on a seperate svg element
+var svg = dimple.newSvg("#charts", 900, 800); 
+      
+    //BAR CHART
+    d3.tsv("example_data.tsv", function (data) {
+      var myChart = new dimple.chart(svg, data);
+      myChart.setBounds(60, 30, 710, 300)
+      myChart.addCategoryAxis("x", ["Price Tier", "Channel"]);
+      myChart.addMeasureAxis("y", "Unit Sales");
+      myChart.addSeries("Channel", dimple.plot.bar);
+        var sectorLegend = myChart.addLegend(865, 115, 60, 300, "Right");
+      myChart.draw();
+    });
+      
+    //TREND CHART
+    d3.tsv("example_data.tsv", function (data) {
+      data = dimple.filterData(data, "Owner", ["Aperture", "Black Mesa"])
+      var trendChart = new dimple.chart(svg, data);
+      trendChart.setBounds(60, 380, 705, 305);
+      var x = trendChart.addCategoryAxis("x", "Month");
+      x.addOrderRule("Date");
+      trendChart.addMeasureAxis("y", "Unit Sales");
+      trendChart.addSeries("Channel", dimple.plot.line);
+      trendChart.draw();
+    });
+
+</script>
+</div>
+</body>
+</html>

@@ -1,0 +1,80 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#7E7E7E",
+        "marker-size": "medium",
+        "marker-symbol": "Edmonton"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -113.5162353515625,
+          53.54357161755108
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#7E7E7E",
+        "marker-size": "medium",
+        "marker-symbol": "Calgary"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -114.08203125,
+          51.04830113331224
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#7E7E7E",
+        "marker-size": "medium",
+        "marker-symbol": "Red Deer"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -113.829345703125,
+          52.288322586002984
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#7E7E7E",
+        "marker-size": "medium",
+        "marker-symbol": "Canmore"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -115.34271240234374,
+          51.086272518565515
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#7E7E7E",
+        "marker-size": "medium",
+        "marker-symbol": "Lethbridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -112.85980224609375,
+          49.70849646404114
+        ]
+      }
+    }
+  ]
+}
