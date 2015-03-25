@@ -85,14 +85,15 @@ d3.json("cities.json", function(error, cities) {
            .style("fill", "white")
            .style("opacity", 0.75)
             .on("mouseover", function(d) {
-                console.log("over");
                 d3.select(this).attr("r", 10);
                 d3.select(this).style("opacity", 0.95);
                 })
             .on("mouseout", function(d) {
-                console.log("out");
                 d3.select(this).attr("r", 5);
                 d3.select(this).style("opacity", 0.75);
+            })
+            .on("click", function(d) {
+                d3.select(this).style("fill", "orange");
             });
     
 });
