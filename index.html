@@ -7,7 +7,6 @@
 
 <body>
     <div class="title">Find Your City</div>
-    
 
 <link rel="stylesheet" type="text/css" href="style.css">
 <div id="xMenu"></div>
@@ -16,18 +15,11 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 
-<div id="bubbles">
-<div id="chartContainer">
-<script src="http://d3js.org/d3.v3.min.js"></script>
-<script src="http://dimplejs.org/dist/dimple.v2.1.2.min.js"></script>
-<script type="text/javascript">
-</script>
-</div>
-</div>
 <!--BAR CHART-->
 <div id="charts"></div>
 <div id="container">
 <script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://dimplejs.org/dist/dimple.v2.1.2.min.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
 <script>
 
@@ -48,55 +40,63 @@ var projection = d3.geo.mercator()
         .scale(1900)
         .translate([width * 8 / 2, height * 5 / 2]);
     
-//MAP
-d3.json("alberta.json", function(error, alberta) {
-    if (error) return console.error(error);
+//Reference this Array to determine which cities to draw in the charts
+var selected = []
+
+//Onload Necessary to ensure the cities render properly consistently
+window.onload = function ()
+{
+    d3.json("alberta.json", function(error, alberta) {
+        if (error) return console.error(error);
+
+        msvg.selectAll("path")
+               .data(alberta.features)
+               .enter()
+               .append("path")
+               .attr("d", d3.geo.path().projection(projection));
+    });
     
-    msvg.selectAll("path")
-           .data(alberta.features)
-           .enter()
-           .append("path")
-           .attr("d", d3.geo.path().projection(projection));
-});
     
-    
-d3.json("cities.json", function(error, cities) {
-    if (error) return console.error(error);
-    
-    console.log(cities.features[0].geometry.coordinates[0]);
-    
-    msvg.selectAll("circle")
-           .data(cities.features)
-           .enter()
-           .append("circle")
-           .attr("cx", function(d) {
-                   return projection([
-                       d.geometry.coordinates[0],
-                       d.geometry.coordinates[1]
-                       ])[0];
-           })
-           .attr("cy", function(d) {
-                   return projection([
-                       d.geometry.coordinates[0],
-                       d.geometry.coordinates[1]
-                   ])[1];
-           }) 
-           .attr("r", 5)
-           .style("fill", "white")
-           .style("opacity", 0.75)
-            .on("mouseover", function(d) {
-                d3.select(this).attr("r", 10);
-                d3.select(this).style("opacity", 0.95);
+    d3.json("cities.json", function(error, cities) {
+        if (error) return console.error(error);
+
+        console.log(cities.features[0].geometry.coordinates[0]);
+
+        msvg.selectAll("circle")
+               .data(cities.features)
+               .enter()
+               .append("circle")
+               .attr("cx", function(d) {
+                       return projection([
+                           d.geometry.coordinates[0],
+                           d.geometry.coordinates[1]
+                           ])[0];
+               })
+               .attr("cy", function(d) {
+                       return projection([
+                           d.geometry.coordinates[0],
+                           d.geometry.coordinates[1]
+                       ])[1];
+               }) 
+               .attr("r", 5)
+               .style("fill", "white")
+               .style("opacity", 0.75)
+                .on("mouseover", function(d) {
+                    d3.select(this).attr("r", 10);
+                    d3.select(this).style("opacity", 0.95);
+                    })
+                .on("mouseout", function(d) {
+                    d3.select(this).attr("r", 5);
+                    d3.select(this).style("opacity", 0.75);
                 })
-            .on("mouseout", function(d) {
-                d3.select(this).attr("r", 5);
-                d3.select(this).style("opacity", 0.75);
-            })
-            .on("click", function(d) {
-                d3.select(this).style("fill", "orange");
-            });
-    
-});
+                .on("click", function(d) {
+                    toggle(d, this);
+                });
+
+    });
+}
+//MAP
+
     
     //Charts are on a seperate svg element
 var svg = dimple.newSvg("#charts", 900, 800); 
@@ -123,6 +123,22 @@ var svg = dimple.newSvg("#charts", 900, 800);
       trendChart.addSeries("Channel", dimple.plot.line);
       trendChart.draw();
     });
+    
+function toggle(d, c) {
+    //CHECK if city is selected
+    var cityName = d.properties["marker-symbol"];
+    var index = selected.indexOf(cityName);
+    console.log(index);
+    
+    if (index == -1) {
+        selected.push(cityName);
+        d3.select(c).style("fill", "orange");
+    }
+    else {
+        selected.splice(index, 1);
+        d3.select(c).style("fill", "white");
+    }
+}
 
 </script>
 </div>
