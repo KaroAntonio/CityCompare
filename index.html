@@ -19,6 +19,7 @@
 <div id="charts"></div>
 <div id="container">
 <script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 <script src="http://dimplejs.org/dist/dimple.v2.1.2.min.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
 <script>
@@ -35,6 +36,9 @@ var width = 1000,
 var msvg = d3.select("#container").append("svg")
     .attr("width", width)
     .attr("height", height);
+
+    //Charts are on a seperate svg element
+var svg = dimple.newSvg("#charts", 900, 800); 
     
 var projection = d3.geo.mercator()
         .scale(1900)
@@ -43,6 +47,23 @@ var projection = d3.geo.mercator()
 //Reference this Array to determine which cities to draw in the charts
 var selected = []
 
+var tip = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([-10, 0])
+  .html(function(d) {
+      //DISPLAY appropriate values
+      var city;
+      if (d.xValue != null) 
+          city = d.xValue;
+      else
+          city = d.properties["marker-symbol"];
+      
+        return "<span>City<span><br>"+city+ "</span>";
+  });
+
+msvg.call(tip);
+svg.call(tip);    
+    
 //Onload Necessary to ensure the cities render properly consistently
 window.onload = function ()
 {
@@ -55,7 +76,6 @@ window.onload = function ()
                .append("path")
                .attr("d", d3.geo.path().projection(projection));
     });
-    
     
     d3.json("cities.json", function(error, cities) {
         if (error) return console.error(error);
@@ -89,39 +109,43 @@ window.onload = function ()
                     d3.select(this).attr("r", 5);
                     d3.select(this).style("opacity", 0.75);
                 })
+                .on('mouseover', tip.show)
+                .on('mouseout', tip.hide)
                 .on("click", function(d) {
                     toggle(d, this);
                 });
-
     });
 }
 //MAP
 
     
-    //Charts are on a seperate svg element
-var svg = dimple.newSvg("#charts", 900, 800); 
+
       
-    //BAR CHART
-    d3.tsv("example_data.tsv", function (data) {
-      var myChart = new dimple.chart(svg, data);
-      myChart.setBounds(60, 30, 710, 300)
-      myChart.addCategoryAxis("x", ["Price Tier", "Channel"]);
-      myChart.addMeasureAxis("y", "Unit Sales");
-      myChart.addSeries("Channel", dimple.plot.bar);
-        //var sectorLegend = myChart.addLegend(865, 115, 60, 300, "Right");
-      myChart.draw();
-    });
+//BAR CHART
+d3.tsv("example_data.tsv", function (data) {
+    var barChart = new dimple.chart(svg, data);
+    barChart.setBounds(60, 30, 710, 300)
+    barChart.addCategoryAxis("x", ["Price Tier", "Channel"]);
+    barChart.addMeasureAxis("y", "Unit Sales");
+    var bars = barChart.addSeries("Channel", dimple.plot.bar);
+    //var sectorLegend = barChart.addLegend(865, 115, 60, 300, "Right");
+    bars.addEventHandler("mouseover", tip.show);
+    bars.addEventHandler("mouseout", tip.hide);
+    barChart.draw();
+});
       
     //TREND CHART
     d3.tsv("example_data.tsv", function (data) {
-      data = dimple.filterData(data, "Owner", ["Aperture", "Black Mesa"])
-      var trendChart = new dimple.chart(svg, data);
-      trendChart.setBounds(60, 380, 705, 305);
-      var x = trendChart.addCategoryAxis("x", "Month");
-      x.addOrderRule("Date");
-      trendChart.addMeasureAxis("y", "Unit Sales");
-      trendChart.addSeries("Channel", dimple.plot.line);
-      trendChart.draw();
+        data = dimple.filterData(data, "Owner", ["Aperture", "Black Mesa"])
+        var trendChart = new dimple.chart(svg, data);
+        trendChart.setBounds(60, 380, 705, 305);
+        var x = trendChart.addCategoryAxis("x", "Month");
+        x.addOrderRule("Date");
+        trendChart.addMeasureAxis("y", "Unit Sales");
+        var trends = trendChart.addSeries("Channel", dimple.plot.line);
+        trends.addEventHandler("mouseover", tip.show);
+        trends.addEventHandler("mouseout", tip.hide);
+        trendChart.draw();
     });
     
 function toggle(d, c) {
@@ -130,6 +154,7 @@ function toggle(d, c) {
     var index = selected.indexOf(cityName);
     console.log(index);
     
+    //TOGGLE Selection
     if (index == -1) {
         selected.push(cityName);
         d3.select(c).style("fill", "orange");
