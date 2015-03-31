@@ -75,6 +75,36 @@
           49.70849646404114
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#7E7E7E",
+        "marker-size": "medium",
+        "marker-symbol": "St. Albert"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -113.66455078125,
+          53.63649628489509
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#7E7E7E",
+        "marker-size": "medium",
+        "marker-symbol": "Fort McMurray"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -111.37939453125,
+          56.71656572651468
+        ]
+      }
     }
   ]
 }
