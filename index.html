@@ -47,6 +47,7 @@ var numBarCharts = Object.keys(barData[0]).length - 1;
     barChartWidth = 710/numBarCharts
     
 var barCharts = []; //An Array containing all dimple bar charts
+var barXAxes = [];
 var chartData;
     
 var projection = d3.geo.mercator()
@@ -152,6 +153,7 @@ function drawBarCharts() {
         chart.draw();
         xAxis.shapes.selectAll("text").remove(); 
         barCharts.push(chart);
+        barXAxes.push(xAxis);
     }
     
 }
@@ -187,6 +189,7 @@ function toggle(d, c) {
     for (var i = 0; i < barCharts.length; i++) {
         barCharts[i].data = dimple.filterData(barData, "City", selected);
         barCharts[i].draw();
+        barXAxes[i].shapes.selectAll("text").remove(); 
     }
 }
 
