@@ -31,15 +31,13 @@ var w = window,
 
 var width = 1000,
     height = 1000;
-    
-    console.log(width + " " + height);
 
 var msvg = d3.select("#container").append("svg")
     .attr("width", width)
     .attr("height", height);
 
     //Charts are on a seperate svg element
-var svg = dimple.newSvg("#charts", 900, 800); 
+var svg = dimple.newSvg("#charts", 1100, 800); 
 
 //Load All data sets asynchronously in a nested callbacks
 d3.tsv("singularData.tsv", function (barData) {
@@ -129,6 +127,8 @@ msvg.selectAll("circle")
    }) 
    .attr("r", 6)
    .style("fill", initColor)
+    .style("stroke", "#fff")
+    .style("stroke-width", 2)
    .style("opacity", 0.75)
     .on("mouseover", function(d) {
         tip.show(d);
@@ -192,7 +192,7 @@ function toggle(d, c) {
     }
     else {
         selected.splice(index, 1);
-        d3.select(c).style("fill", "black");
+        d3.select(c).style("fill", "#777");
     }
     
     //Filter Charts
@@ -210,15 +210,15 @@ function initColor(d) {
     if (isSelected) 
         return cityColor(city);
     else 
-        return "black";
+        return "#777";
 }
     
 function cityColor(city) {
     //Return City Specific colors
     if (city == "Edmonton") return "#E085C2";
-    if (city == "Calgary") return "#FEFEC1";
-    if (city == "Red Deer") return "#FF9494";
-    if (city == "Lethbridge") return "#FFE0A3";
+    if (city == "Calgary") return "#FFE0A3";
+    if (city == "Red Deer") return "#FEFEC1";
+    if (city == "Lethbridge") return "#FF9494";
     if (city == "Fort McMurray") return "#CCB2FF";
     if (city == "Canmore") return "#C2DF83";
     if (city == "St. Albert") return "#99CCB2";
