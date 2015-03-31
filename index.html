@@ -6,7 +6,7 @@
 </head>
 
 <body>
-    <div class="title">Find Your City</div>
+<div class="title">Find Your City</div>
 
 <link rel="stylesheet" type="text/css" href="style.css">
 <div id="xMenu"></div>
@@ -31,7 +31,9 @@ var w = window,
     */
     
 var width = 1000,
-    height = 1000;
+    height = 1000
+    numBarCharts = 2
+    barChartWidth = 710/numBarCharts;
 
 var msvg = d3.select("#container").append("svg")
     .attr("width", width)
@@ -39,6 +41,13 @@ var msvg = d3.select("#container").append("svg")
 
     //Charts are on a seperate svg element
 var svg = dimple.newSvg("#charts", 900, 800); 
+
+//Load All data sets asynchronously in a nested callbacks
+d3.tsv("singularData.tsv", function (barData) {
+d3.tsv("example_data.tsv", function (trendData) {
+    
+var barPopChart;
+var chartData;
     
 var projection = d3.geo.mercator()
         .scale(1900)
@@ -46,6 +55,7 @@ var projection = d3.geo.mercator()
     
 //Reference this Array to determine which cities to draw in the charts
 var selected = []
+var x;
 
 var tip = d3.tip()
   .attr('class', 'd3-tip')
@@ -55,10 +65,12 @@ var tip = d3.tip()
       var city;
         if (d.xValue != null) {
             var isTrend = d.seriesShapes[0].length == selected.length;
-            if (isTrend)
+            if (isTrend) {
                 city = d.seriesValue[0];
-            else
+            }
+            else {
                 city = d.xValue;
+            }
         }
       else 
           city = d.properties["marker-symbol"];
@@ -67,96 +79,92 @@ var tip = d3.tip()
   });
 
 msvg.call(tip);
-svg.call(tip);    
+svg.call(tip); 
     
-//Onload Necessary to ensure the cities render properly consistently
-window.onload = function ()
-{
-    //MAP
-    d3.json("alberta.json", function(error, alberta) {
-        if (error) return console.error(error);
+drawBarCharts();
 
-        msvg.selectAll("path")
-               .data(alberta.features)
-               .enter()
-               .append("path")
-               .attr("d", d3.geo.path().projection(projection));
-    });
-    
-    d3.json("cities.json", function(error, cities) {
-        if (error) return console.error(error);
+//MAP
+d3.json("alberta.json", function(error, alberta) {
+    if (error) return console.error(error);
 
-        console.log(cities.features[0].geometry.coordinates[0]);
+    msvg.selectAll("path")
+           .data(alberta.features)
+           .enter()
+           .append("path")
+           .attr("d", d3.geo.path().projection(projection));
+    x = 5;
+});
 
-        msvg.selectAll("circle")
-               .data(cities.features)
-               .enter()
-               .append("circle")
-               .attr("cx", function(d) {
-                       return projection([
-                           d.geometry.coordinates[0],
-                           d.geometry.coordinates[1]
-                           ])[0];
-               })
-               .attr("cy", function(d) {
-                   return projection([
-                       d.geometry.coordinates[0],
-                       d.geometry.coordinates[1]
-                   ])[1];
-               }) 
-               .attr("r", 5)
-               .style("fill", "white")
-               .style("opacity", 0.75)
-                .on("mouseover", function(d) {
-                    d3.select(this).attr("r", 10);
-                    d3.select(this).style("opacity", 0.95);
-                    })
-                .on("mouseout", function(d) {
-                    d3.select(this).attr("r", 5);
-                    d3.select(this).style("opacity", 0.75);
-                })
-                .on('mouseover', tip.show)
-                .on('mouseout', tip.hide)
-                .on("click", function(d) {
-                    toggle(d, this);
-                });
-    });
-}
-   
-//BAR CHART
-d3.tsv("example_data.tsv", function (data) {
-    var barChart = new dimple.chart(svg, data);
-    barChart.setBounds(60, 30, 710, 300)
-    barChart.addCategoryAxis("x", ["Price Tier", "Channel"]);
-    barChart.addMeasureAxis("y", "Unit Sales");
-    barChart.addMeasureAxis("z", "Unit Sales");
-    var bars = barChart.addSeries("Channel", dimple.plot.bar);
-    //var sectorLegend = barChart.addLegend(865, 115, 60, 300, "Right");
+d3.json("cities.json", function(error, cities) {
+    if (error) return console.error(error);
+
+    msvg.selectAll("circle")
+       .data(cities.features)
+       .enter()
+       .append("circle")
+       .attr("cx", function(d) {
+               return projection([
+                   d.geometry.coordinates[0],
+                   d.geometry.coordinates[1]
+                   ])[0];
+       })
+       .attr("cy", function(d) {
+           return projection([
+               d.geometry.coordinates[0],
+               d.geometry.coordinates[1]
+           ])[1];
+       }) 
+       .attr("r", 5)
+       .style("fill", "white")
+       .style("opacity", 0.75)
+        .on("mouseover", function(d) {
+            d3.select(this).attr("r", 10);
+            d3.select(this).style("opacity", 0.95);
+            })
+        .on("mouseout", function(d) {
+            d3.select(this).attr("r", 5);
+            d3.select(this).style("opacity", 0.75);
+        })
+        .on('mouseover', tip.show)
+        .on('mouseout', tip.hide)
+        .on("click", function(d) {
+            toggle(d, this);
+        });
+});
+
+//BAR CHARTS
+function drawBarCharts() {
+    //POPULATION
+    chartData = dimple.filterData(barData, "City", selected);
+    barPopChart = new dimple.chart(svg, chartData);
+    barPopChart.setBounds(60, 30, barChartWidth, 300);
+    var xAxis = barPopChart.addCategoryAxis("x", "City");
+    var yAxis = barPopChart.addMeasureAxis("y", "Population");
+    var bars = barPopChart.addSeries(null, dimple.plot.bar);
+    xAxis.title = "";
     bars.addEventHandler("mouseover", tip.show);
     bars.addEventHandler("mouseout", tip.hide);
-    barChart.draw();
-});
-      
+    barPopChart.draw();
+    xAxis.shapes.selectAll("text").remove();  
+    
+}
+
 //TREND CHART
-d3.tsv("example_data.tsv", function (data) {
-    data = dimple.filterData(data, "Owner", ["Aperture", "Black Mesa"])
-    var trendChart = new dimple.chart(svg, data);
-    trendChart.setBounds(60, 380, 705, 305);
-    var x = trendChart.addCategoryAxis("x", "Month");
-    x.addOrderRule("Date");
-    trendChart.addMeasureAxis("y", "Unit Sales");
-    trendChart.addMeasureAxis("z", "Unit Sales");
-    var trends = trendChart.addSeries("Channel", dimple.plot.line);
-    trends.addEventHandler("mouseover", tip.show);
-    trends.addEventHandler("mouseout", tip.hide);
-    trendChart.draw();
-});
+chartData = dimple.filterData(trendData, "Owner", ["Aperture", "Black Mesa"])
+var trendChart = new dimple.chart(svg, chartData);
+trendChart.setBounds(60, 380, 705, 305);
+var x = trendChart.addCategoryAxis("x", "Month");
+x.addOrderRule("Date");
+trendChart.addMeasureAxis("y", "Unit Sales");
+var trends = trendChart.addSeries("Channel", dimple.plot.line);
+trends.addEventHandler("mouseover", tip.show);
+trends.addEventHandler("mouseout", tip.hide);
+trendChart.draw();
     
 function toggle(d, c) {
     //CHECK if city is selected
     var cityName = d.properties["marker-symbol"];
     var index = selected.indexOf(cityName);
-    console.log(index);
     
     //TOGGLE Selection
     if (index == -1) {
@@ -167,7 +175,16 @@ function toggle(d, c) {
         selected.splice(index, 1);
         d3.select(c).style("fill", "white");
     }
+    
+    //Filter Charts
+    if (barPopChart != null) {
+        barPopChart.data = dimple.filterData(barData, "City", selected);
+        barPopChart.draw();
+    }
 }
+
+});   
+});
 
 </script>
 </div>
