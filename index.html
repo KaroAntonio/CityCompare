@@ -43,8 +43,9 @@ var svg = dimple.newSvg("#charts", 900, 800);
 d3.tsv("singularData.tsv", function (barData) {
 d3.tsv("example_data.tsv", function (trendData) {
 
-var numBarCharts = Object.keys(barData[0]).length - 1;
-    barChartWidth = 710/numBarCharts
+var numBarCharts = Object.keys(barData[0]).length - 1,
+    numCities = barData.length,
+    barChartWidth = 710/numBarCharts;
     
 var barCharts = []; //An Array containing all dimple bar charts
 var barXAxes = [];
@@ -93,10 +94,11 @@ d3.json("alberta.json", function(error, alberta) {
     if (error) return console.error(error);
 
     msvg.selectAll("path")
-           .data(alberta.features)
-           .enter()
-           .append("path")
-           .attr("d", d3.geo.path().projection(projection));
+        .data(alberta.features)
+        .enter()
+        .append("path")
+        .attr("fill", "#dfdfdf")
+        .attr("d", d3.geo.path().projection(projection));
     x = 5;
 });
 
@@ -146,7 +148,9 @@ function drawBarCharts() {
         var xAxis = chart.addCategoryAxis("x", "City");
         var yAxis = 
             chart.addMeasureAxis("y", Object.keys(barData[0])[i+1]);
-        var bars = chart.addSeries(null, dimple.plot.bar);
+        var bars = chart.addSeries("City", dimple.plot.bar);
+        //COLOR by City
+        setBarColors(chart);
         xAxis.title = "";
         bars.addEventHandler("mouseover", tip.show);
         bars.addEventHandler("mouseout", tip.hide);
@@ -178,7 +182,7 @@ function toggle(d, c) {
     //TOGGLE Selection
     if (index == -1) {
         selected.push(cityName);
-        d3.select(c).style("fill", "orange");
+        d3.select(c).style("fill", cityColor(cityName));
     }
     else {
         selected.splice(index, 1);
@@ -190,6 +194,24 @@ function toggle(d, c) {
         barCharts[i].data = dimple.filterData(barData, "City", selected);
         barCharts[i].draw();
         barXAxes[i].shapes.selectAll("text").remove(); 
+    }
+}
+    
+function cityColor(city) {
+    //Return City Specific colors
+    if (city == "Edmonton") return "#E085C2";
+    if (city == "Calgary") return "#FEFEC1";
+    if (city == "Red Deer") return "#FF9494";
+    if (city == "Lethbridge") return "#FFE0A3";
+    if (city == "Fort McMurray") return "#CCB2FF";
+    if (city == "Canmore") return "#C2DF83";
+    if (city == "St. Albert") return "#99CCB2";
+}
+    
+function setBarColors(myChart) {
+    for (var i = 0; i < numCities; i++ ) {
+        var cityName = barData[i].City;
+        myChart.assignColor(cityName, cityColor(cityName), cityColor(cityName), 0.7);
     }
 }
 
