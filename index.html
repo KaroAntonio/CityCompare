@@ -15,7 +15,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 
-<!--BAR CHART-->
 <div id="charts"></div>
 <div id="container">
 <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -31,9 +30,7 @@ var w = window,
     */
     
 var width = 1000,
-    height = 1000
-    numBarCharts = 2
-    barChartWidth = 710/numBarCharts;
+    height = 1000;
 
 var msvg = d3.select("#container").append("svg")
     .attr("width", width)
@@ -45,8 +42,11 @@ var svg = dimple.newSvg("#charts", 900, 800);
 //Load All data sets asynchronously in a nested callbacks
 d3.tsv("singularData.tsv", function (barData) {
 d3.tsv("example_data.tsv", function (trendData) {
+
+var numBarCharts = Object.keys(barData[0]).length - 1;
+    barChartWidth = 710/numBarCharts
     
-var barPopChart;
+var barCharts = []; //An Array containing all dimple bar charts
 var chartData;
     
 var projection = d3.geo.mercator()
@@ -64,15 +64,19 @@ var tip = d3.tip()
       //DISPLAY appropriate values
       var city;
         if (d.xValue != null) {
-            var isTrend = d.seriesShapes[0].length == selected.length;
-            if (isTrend) {
-                city = d.seriesValue[0];
-            }
-            else {
+            //Tricky way of determining if 
+            //the tooltip is on trend or bar chart
+            var isBar = 
+                d.seriesShapes[0][0].classList[1] == "dimple-bar";
+            console.log(isBar);
+            if (isBar) {
                 city = d.xValue;
             }
+            else {
+                city = d.seriesValue[0];
+            }
         }
-      else 
+        else 
           city = d.properties["marker-symbol"];
       
         return "<span>City<span><br>"+city+ "</span>";
@@ -134,18 +138,21 @@ d3.json("cities.json", function(error, cities) {
 
 //BAR CHARTS
 function drawBarCharts() {
-    //POPULATION
-    chartData = dimple.filterData(barData, "City", selected);
-    barPopChart = new dimple.chart(svg, chartData);
-    barPopChart.setBounds(60, 30, barChartWidth, 300);
-    var xAxis = barPopChart.addCategoryAxis("x", "City");
-    var yAxis = barPopChart.addMeasureAxis("y", "Population");
-    var bars = barPopChart.addSeries(null, dimple.plot.bar);
-    xAxis.title = "";
-    bars.addEventHandler("mouseover", tip.show);
-    bars.addEventHandler("mouseout", tip.hide);
-    barPopChart.draw();
-    xAxis.shapes.selectAll("text").remove();  
+    for (var i = 0; i < numBarCharts; i++) {
+        chartData = dimple.filterData(barData, "City", selected);
+        var chart = new dimple.chart(svg, chartData);
+        chart.setBounds(((barChartWidth + 60) * i) + 60, 30, barChartWidth, 300);
+        var xAxis = chart.addCategoryAxis("x", "City");
+        var yAxis = 
+            chart.addMeasureAxis("y", Object.keys(barData[0])[i+1]);
+        var bars = chart.addSeries(null, dimple.plot.bar);
+        xAxis.title = "";
+        bars.addEventHandler("mouseover", tip.show);
+        bars.addEventHandler("mouseout", tip.hide);
+        chart.draw();
+        xAxis.shapes.selectAll("text").remove(); 
+        barCharts.push(chart);
+    }
     
 }
 
@@ -177,9 +184,9 @@ function toggle(d, c) {
     }
     
     //Filter Charts
-    if (barPopChart != null) {
-        barPopChart.data = dimple.filterData(barData, "City", selected);
-        barPopChart.draw();
+    for (var i = 0; i < barCharts.length; i++) {
+        barCharts[i].data = dimple.filterData(barData, "City", selected);
+        barCharts[i].draw();
     }
 }
 
