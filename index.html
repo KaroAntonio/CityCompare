@@ -40,8 +40,8 @@ var msvg = d3.select("#container").append("svg")
 var svg = dimple.newSvg("#charts", 1100, 800); 
 
 //Load All data sets asynchronously in a nested callbacks
-d3.tsv("singularData.tsv", function (barData) {
-d3.tsv("example_data.tsv", function (trendData) {
+d3.tsv("barData.tsv", function (barData) {
+d3.tsv("trendData.tsv", function (trendData) {
 d3.json("cities.json", function(cities) {
 d3.json("alberta.json", function(alberta) {
     
@@ -156,7 +156,7 @@ function drawBarCharts() {
             chart.addMeasureAxis("y", Object.keys(barData[0])[i+1]);
         var bars = chart.addSeries("City", dimple.plot.bar);
         //COLOR by City
-        setBarColors(chart);
+        setChartColors(chart);
         xAxis.title = "";
         bars.addEventHandler("mouseover", tip.show);
         bars.addEventHandler("mouseout", tip.hide);
@@ -169,13 +169,15 @@ function drawBarCharts() {
 }
 
 //TREND CHART
-chartData = dimple.filterData(trendData, "Owner", ["Aperture", "Black Mesa"])
+chartData = dimple.filterData(trendData, "City", selected);
 var trendChart = new dimple.chart(svg, chartData);
 trendChart.setBounds(60, 380, 705, 305);
 var x = trendChart.addCategoryAxis("x", "Month");
-x.addOrderRule("Date");
-trendChart.addMeasureAxis("y", "Unit Sales");
-var trends = trendChart.addSeries("Channel", dimple.plot.line);
+x.addOrderRule("Date",true);
+trendChart.addMeasureAxis("y", "Rental Rate");
+var trends = trendChart.addSeries("City", dimple.plot.line);
+//COLOR by City
+setChartColors(trendChart);
 trends.addEventHandler("mouseover", tip.show);
 trends.addEventHandler("mouseout", tip.hide);
 trendChart.draw();
@@ -224,10 +226,10 @@ function cityColor(city) {
     if (city == "St. Albert") return "#99CCB2";
 }
     
-function setBarColors(myChart) {
+function setChartColors(chart) {
     for (var i = 0; i < numCities; i++ ) {
         var cityName = barData[i].City;
-        myChart.assignColor(cityName, cityColor(cityName), cityColor(cityName), 0.7);
+        chart.assignColor(cityName, cityColor(cityName), cityColor(cityName), 0.7);
     }
 }
 
