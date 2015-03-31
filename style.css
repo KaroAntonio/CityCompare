@@ -17,7 +17,7 @@ svg { position:fixed; top:1; bottom:0; left:0; right:1; z-index: 1; }
 
 #container {
     position: fixed;
-    left: 5%;
+    left: 2%;
     top: 15%;
     text-anchor: middle;
 }

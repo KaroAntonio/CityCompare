@@ -62,15 +62,14 @@ var x;
 var tip = d3.tip()
   .attr('class', 'd3-tip')
   .offset([-10, 0])
-  .html(function(d) {
-      //DISPLAY appropriate values
-      var city;
+    .html(function(d) {
+        //DISPLAY appropriate values
+        var city;
         if (d.xValue != null) {
             //Tricky way of determining if 
             //the tooltip is on trend or bar chart
             var isBar = 
                 d.seriesShapes[0][0].classList[1] == "dimple-bar";
-            console.log(isBar);
             if (isBar) {
                 city = d.xValue;
             }
@@ -79,10 +78,18 @@ var tip = d3.tip()
             }
         }
         else 
-          city = d.properties["marker-symbol"];
-      
-        return "<span>City<span><br>"+city+ "</span>";
-  });
+            city = d.properties["marker-symbol"];
+        
+        var cityData;
+        for (var i = 0; i < numCities; i++) {
+            if (barData[i].City == city) {
+                cityData = barData[i];
+            }
+        }
+        
+        return "<span>" + city + "<br>" + 
+            "Population: " + cityData.Population + "</span>";
+    });
 
 msvg.call(tip);
 svg.call(tip); 
@@ -121,7 +128,7 @@ d3.json("cities.json", function(error, cities) {
                d.geometry.coordinates[1]
            ])[1];
        }) 
-       .attr("r", 5)
+       .attr("r", 6)
        .style("fill", "white")
        .style("opacity", 0.75)
         .on("mouseover", function(d) {
@@ -129,7 +136,7 @@ d3.json("cities.json", function(error, cities) {
             d3.select(this).style("opacity", 0.95);
             })
         .on("mouseout", function(d) {
-            d3.select(this).attr("r", 5);
+            d3.select(this).attr("r", 6);
             d3.select(this).style("opacity", 0.75);
         })
         .on('mouseover', tip.show)
@@ -192,7 +199,7 @@ function toggle(d, c) {
     //Filter Charts
     for (var i = 0; i < barCharts.length; i++) {
         barCharts[i].data = dimple.filterData(barData, "City", selected);
-        barCharts[i].draw();
+        barCharts[i].draw(300);
         barXAxes[i].shapes.selectAll("text").remove(); 
     }
 }
