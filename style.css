@@ -3,7 +3,6 @@ html, body { margin:0; padding:0; overflow:hidden }
 svg { position:fixed; top:1; bottom:0; left:0; right:1; z-index: 1; }
 */
 
-
 .title {
     margin: 0px;
     margin: 0px;
@@ -12,19 +11,19 @@ svg { position:fixed; top:1; bottom:0; left:0; right:1; z-index: 1; }
     color: #ffffff;
     pointer-events: none;
     text-align: center;
-    background: #cccccc;
+    background: #444444;
 }
 
 #container {
     position: fixed;
-    left: 5%;
+    left: 2%;
     top: 15%;
     text-anchor: middle;
 }
 
 #charts {
     position: fixed;
-    left: 30%;
+    left: 27%;
     top: 10%;
     text-anchor: middle;
     z-index: 5;
