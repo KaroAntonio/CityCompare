@@ -2,11 +2,11 @@
 <html>
 <head>
 
-<title>Find Your City</title>
+<title>Live Alberta</title>
 </head>
 
 <body>
-<div class="title">Find Your City</div>
+<div class="title">Live Alberta</div>
 
 <link rel="stylesheet" type="text/css" href="style.css">
 <div id="xMenu"></div>
@@ -100,7 +100,7 @@ var tip = d3.tip()
         var AHP = cityData[ 'Average House Price' ];
         var RTR = cityData[ 'Residential Tax Rate' ];
         
-        return "<span>" + city + "<br>" + 
+        return "<span><strong>" + city + "</strong><br>" + 
             "Population: " + cityData.Population + "<br>" +
             "Residential Tax Rate: " + RTR + "<br>" +
             "Average House Price: " + AHP +"</span>";
@@ -236,13 +236,13 @@ function initColor(d) {
     
 function cityColor(city) {
     //Return City Specific colors
-    if (city == "Edmonton") return "#E085C2";
-    if (city == "Calgary") return "#FFE0A3";
-    if (city == "Red Deer") return "#FEFEC1";
-    if (city == "Lethbridge") return "#FF9494";
-    if (city == "Wood Buffalo") return "#CCB2FF";
-    if (city == "Canmore") return "#C2DF83";
-    if (city == "St. Albert") return "#99CCB2";
+    if (city == "Edmonton") return "#CC3399";
+    if (city == "Calgary") return "#FFCC66";
+    if (city == "Red Deer") return "#FDFD63";
+    if (city == "Lethbridge") return "#FF6666";
+    if (city == "Wood Buffalo") return "#9966FF";
+    if (city == "Canmore") return "#99C930";
+    if (city == "St. Albert") return "#339966";
 }
     
 function setChartColors(chart) {
