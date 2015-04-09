@@ -75,6 +75,7 @@ var trendValue = "Rental Rate";
 var legendBox,
     legendTitle,
     legendCircles,
+    legendCircleBacks,
     legendCities,
     toggleTitle,
     trendTitle,
@@ -350,13 +351,35 @@ function drawLegend() {
     if (legendCircles != null)
         legendCircles.remove();
     
+    if (legendCircleBacks != null)
+        legendCircleBacks.remove();
+    
+    legendCircleBacks = msvg.append("g")
+                    .selectAll("circle")
+                    .data(selectedCities)
+                    .enter()
+                    .append("circle")
+                    .attr("fill", "#fff")
+                    .attr("opacity", 0.9)
+                    .attr("r", 8)
+                    .attr("stroke", "#fff")
+                    .attr("stroke-width", "2px")
+                    .attr("cx", legendOffset + 10)
+                    .attr("cy", function (d,i) { 
+                        return (height*0.06 - 6 + (i * 22)); })
+                    .attr("width", 200)
+                    .style("z-index", 10)
+                    .on("click", function(d) {
+                        toggleCity(d, this);
+                            });
+    
     legendCircles = msvg.append("g")
                     .selectAll("circle")
                     .data(selectedCities)
                     .enter()
                     .append("circle")
                     .attr("fill", cityColor)
-                    .attr("opacity", 0.9)
+                    .attr("opacity", 0.7)
                     .attr("r", 8)
                     .attr("stroke", "#fff")
                     .attr("stroke-width", "2px")
