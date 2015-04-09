@@ -105,6 +105,36 @@
           56.71656572651468
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#7E7E7E",
+        "marker-size": "medium",
+        "marker-symbol": "Medicine Hat"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -110.687255859375,
+          50.04302974380058
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#7E7E7E",
+        "marker-size": "medium",
+        "marker-symbol": "Grande Prairie"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.795166015625,
+          55.16004309876882
+        ]
+      }
     }
   ]
 }
