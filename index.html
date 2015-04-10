@@ -21,15 +21,19 @@
 <div id="charts"></div>
 <div id="container">
 <script>
-
+//SET Curser
+document.getElementsByTagName("body")[0].style.cursor = "default";
+    
 var w = window,
-    width = w.innerWidth || e.clientWidth || g.clientWidth,
-    height = w.innerHeight|| e.clientHeight|| g.clientHeight;
+    wwidth = w.innerWidth || e.clientWidth || g.clientWidth,
+    wheight = w.innerHeight|| e.clientHeight|| g.clientHeight;
     
 var width = 1000,
     height = 1000,
-    chartWidth = width * 0.6
-    legendOffset = width * 0.054;
+    chartWidth = width * 0.6,
+    legendOffset = width * 0.054,
+    menuXoffset = width * 0.7,
+    menuYoffset = height * 0.36;
 
 var msvg = d3.select("#container").append("svg")
     .attr("width", width)
@@ -56,8 +60,8 @@ var selectedTrendCharts = [
     selectedBarCharts = [
     Object.keys(barData[0])[1],
     Object.keys(barData[0])[2],
-    Object.keys(barData[0])[3],
-    Object.keys(barData[0])[4]];
+    Object.keys(barData[0])[3]],
+    selectedBarChart = selectedBarCharts[0]; //the bar chart currently selected in the drop down menu
 var numBarCharts = selectedBarCharts.length,
     numCities = barData.length,
     trendChartTypes = Object.keys(trendData[0]).slice(2, Object.keys(trendData[0]).length),
@@ -66,12 +70,24 @@ var numBarCharts = selectedBarCharts.length,
     barChartWidth = chartWidth/numBarCharts;
 
 var trendChart;
-var barCharts = []; //An Array containing all dimple bar charts
+var selectableBarCharts = [],
+    barCharts = []; //An Array containing all dimple bar charts
 var barXAxes = [];
 var chartData;
+    
+for (var i = 0; i < barChartTypes.length; i++) {
+    var chart = barChartTypes[i];
+    var ic = selectedBarCharts
+                    .indexOf(chart);
+    if (ic == -1) {
+        selectableBarCharts.push(chart)
+    }
+}
 
 var trendValue = "Rental Rate";
-    
+
+var initialized = false;
+var addBarButton;
 var legendBox,
     legendTitle,
     legendCircles,
@@ -79,7 +95,9 @@ var legendBox,
     legendCities,
     toggleTitle,
     trendTitle,
-    barTitle;
+    barTitle,
+    barList,
+    listButtons;
     
 var projection = d3.geo.mercator()
         .scale(1900)
@@ -88,8 +106,6 @@ var projection = d3.geo.mercator()
 //Reference this Array to determine which cities to draw in the charts
 var selectedCities = ["Edmonton", "Calgary"],
     cityMarkers = {};
-
-var x;
 
 //Initialize Tool Tip
 var tip = d3.tip()
@@ -163,19 +179,32 @@ function mapCity(cityName, c) {
 
 function drawChartMenus() {
     
-    var barMenu1 = d3.select("#barMenu1")
-            .style("top", height/2 -4 + "px")
+    if (true) {
+        initialized = true;
+        d3.select("#barMenu1").selectAll("select").remove();
+        var barMenu1 = d3.select("#barMenu1")
+            .style("top", menuYoffset * 1.54 + "px")
+            .style("left", menuXoffset * 1.69 + "px")
             .append("select")
             .on("change", function() {
                 //SET new Value
-                selectedBarCharts[0] = 
+                selectedBarChart = 
                     this.options[this.selectedIndex].__data__;
-                
-                //Draw Bar Charts
-                UpdateCharts();
             })
             .selectAll("option")
-            .data(barChartTypes)
+            .data(function() {
+                selectableBarCharts = [];
+                for (var i = 0; i < barChartTypes.length; i++) {
+                    var chart = barChartTypes[i];
+                    var ic = selectedBarCharts
+                                    .indexOf(chart);
+                    if (ic == -1) {
+                        selectableBarCharts.push(chart)
+                    }
+                }
+                console.log(selectableBarCharts);
+                return selectableBarCharts;
+            })
             .enter()
             .append("option")
             .attr("value", function (d) {
@@ -184,79 +213,14 @@ function drawChartMenus() {
             .text(function (d) {
                 return d;
             })
-            .property("selected", function(d){ return d === selectedBarCharts[0]; });
-
-    var barMenu2 = d3.select("#barMenu2")
-            .style("top", height/2 + 20 + "px")
-            .append("select")
-            .on("change", function() {
-                //SET new Value
-                selectedBarCharts[1] = 
-                    this.options[this.selectedIndex].__data__;
-
-                //Draw Bar Charts
-                UpdateCharts();
-            })
-            .selectAll("option")
-            .data(barChartTypes)
-            .enter()
-            .append("option")
-            .attr("value", function (d) {
-                return d;
-            })
-            .text(function (d) {
-                return d;
-            })
-            .property("selected", function(d){ return d === selectedBarCharts[1]; });
-
-    var barMenu3 = d3.select("#barMenu3")
-            .style("top", height/2 + 44 + "px")
-            .append("select")
-            .on("change", function() {
-                //SET new Value
-                selectedBarCharts[2] = 
-                    this.options[this.selectedIndex].__data__;
-
-                //Draw Bar Charts
-                UpdateCharts();
-            })
-            .selectAll("option")
-            .data(barChartTypes)
-            .enter()
-            .append("option")
-            .attr("value", function (d) {
-                return d;
-            })
-            .text(function (d) {
-                return d;
-            })
-            .property("selected", function(d){ return d === selectedBarCharts[2]; });
+            .property("selected", function(d){ 
+                selectedBarChart = selectableBarCharts[0];
+                return d === selectableBarCharts[0]; });
     
-    var barMenu4 = d3.select("#barMenu4")
-            .style("top", height/2 + 68 + "px")
-            .append("select")
-            .on("change", function() {
-                //SET new Value
-                selectedBarCharts[3] = 
-                    this.options[this.selectedIndex].__data__;
-
-                //Draw Bar Charts
-                UpdateCharts();
-            })
-            .selectAll("option")
-            .data(barChartTypes)
-            .enter()
-            .append("option")
-            .attr("value", function (d) {
-                return d;
-            })
-            .text(function (d) {
-                return d;
-            })
-            .property("selected", function(d){ return d === selectedBarCharts[3]; });
-    
+    d3.select("#trendMenu1").selectAll("select").remove();
     var trendMenu1 = d3.select("#trendMenu1")
-            .style("top", height/2 + 120 + "px")
+            .style("top", menuYoffset * 1.36 + "px")
+            .style("left", menuXoffset * 1.69 + "px")
             .append("select")
             .on("change", function() {
                 //SET new Value
@@ -277,6 +241,106 @@ function drawChartMenus() {
                 return d;
             })
             .property("selected", function(d){ return d === selectedTrendCharts[0]; });
+    }
+    
+    if (trendTitle != null)
+        trendTitle.remove();
+    trendTitle = svg.append("g")
+                .selectAll("text")
+                .data(["Toggle Trend Chart"])
+                .enter()
+                .append("text")
+                .attr("x", menuXoffset * 1.1)
+                .attr("y", menuYoffset * 1.1)
+                .attr('class', 'menuTitle')
+                .text(function (d) { return d; });
+    
+    if (barTitle != null)
+        barTitle.remove();
+    barTitle = svg.append("g")
+                .selectAll("text")
+                .data(["Add/Remove Bar Charts"])
+                .enter()
+                .append("text")
+                .attr("x", menuXoffset * 1.1)
+                .attr("y", menuYoffset * 1.28)
+                .attr('class', 'menuTitle')
+                .text(function (d) { return d; });
+  
+    if (addBarButton != null)
+        addBarButton.remove();
+    
+    addBarButton = svg.append("g")
+            .selectAll("text")
+            .data(["+"])
+            .enter()
+            .append("text")
+            .attr('class', 'menuButton')
+            .attr('fill', '#999')
+            .attr("x", menuXoffset * 1.1)
+            .attr("y", menuYoffset * 1.36)
+            .text(function (d) { return d; })
+            .on("click", function() { 
+                if (selectableBarCharts.length == 0)
+                    return
+                selectedBarCharts.push(selectedBarChart);
+                UpdateCharts();
+                console.log("click"); })
+            .on("mouseover", function(d) {
+                console.log("hover");
+                 d3.select(this).attr('fill', '#000'); })
+            .on("mouseout", function(d) {
+                 d3.select(this).attr('fill', '#999'); });
+    
+    
+    
+    if (barList != null)
+        barList.remove();
+    
+    barList = svg.append("g")
+                .selectAll("text")
+                .data(selectedBarCharts)
+                .enter()
+                .append("text")
+                .attr("fill", "#000")
+                .attr("x", menuXoffset * 1.134)
+                .attr('class', 'barList')
+                .attr("y", function (d,i) { 
+                    return (menuYoffset*1.44 + (i * 22)); })
+                .text(function (d) { return d; })
+                .on("click", function(d) {
+                        selectedBarCharts.splice(
+                            selectedBarCharts.indexOf(d),1);
+                        UpdateCharts();
+                            })
+                .on("mouseover", function(d) {
+                     d3.select(this).attr('fill', '#555'); })
+                .on("mouseout", function(d) {
+                     d3.select(this).attr('fill', '#000'); });
+    
+    if (listButtons != null)
+        listButtons.remove();
+    
+    listButtons = svg.append("g")
+                .selectAll("text")
+                .data(selectedBarCharts)
+                .enter()
+                .append("text")
+                .attr('fill', '#999')
+                .attr("x", menuXoffset * 1.108)
+                .attr('class', 'menuButton')
+                .attr("y", function (d,i) { 
+                    return (menuYoffset*1.45 + (i * 22)); })
+                .text("-")
+                .on("click", function(d) { 
+                    selectedBarCharts.splice(
+                            selectedBarCharts.indexOf(d),1);
+                    UpdateCharts();})
+                .on("mouseover", function(d) {
+                     d3.select(this).attr('fill', '#000'); })
+                .on("mouseout", function(d) {
+                     d3.select(this).attr('fill', '#999'); });
+    
 }
 
 //MAP
@@ -306,7 +370,6 @@ function drawMap() {
                    ])[0];
        })
        .attr("cy", function(d) {
-        console.log(d);
            return projection([
                d.geometry.coordinates[0],
                d.geometry.coordinates[1]
@@ -356,7 +419,7 @@ function drawLegend() {
             .data(["Selected Cities"])
             .enter()
             .append("text")
-            .attr("x", legendOffset)
+            .attr("x", legendOffset*0.9)
             .attr("y", height * 0.04)
             .attr("fill", "#fff")
             .attr('class', 'legendTitle')
@@ -378,7 +441,7 @@ function drawLegend() {
                     .attr("r", 8)
                     .attr("stroke", "#fff")
                     .attr("stroke-width", "2px")
-                    .attr("cx", legendOffset + 10)
+                    .attr("cx", legendOffset*0.9 + 10)
                     .attr("cy", function (d,i) { 
                         return (height*0.06 - 6 + (i * 22)); })
                     .attr("width", 200)
@@ -394,7 +457,7 @@ function drawLegend() {
                     .attr("r", 8)
                     .attr("stroke", "#fff")
                     .attr("stroke-width", "2px")
-                    .attr("cx", legendOffset + 10)
+                    .attr("cx", legendOffset*0.9 + 10)
                     .attr("cy", function (d,i) { 
                         return (height*0.06 - 6 + (i * 22)); })
                     .attr("width", 200)
@@ -414,67 +477,33 @@ function drawLegend() {
                 .enter()
                 .append("text")
                 .attr("fill", "#fff")
-                .attr("x", legendOffset + 30)
+                .attr("x", legendOffset*0.9 + 30)
                 .attr("y", function (d,i) { 
                     return (height*0.06 + (i * 22)); })
                 .attr('class', 'legend')
                 .text(function (d) { return d; })
                 .on("click", function(d) {
                         toggleCity(d);
-                            });
+                            })
+                .on("mouseover", function(d) {
+                     d3.select(this).attr('fill', '#eee'); })
+                .on("mouseout", function(d) {
+                     d3.select(this).attr('fill', '#fff'); });
     
-    if (toggleTitle != null)
-        toggleTitle.remove();
-    toggleTitle = svg.append("g")
-                .attr("width", 200)
-                .attr("height", 50)
-                .selectAll("text")
-                .data(["Toggle Charts"])
-                .enter()
-                .append("text")
-                .attr("x", width * 0.748)
-                .attr("y", height * 0.38)
-                .attr('class', 'legendTitle')
-                .text(function (d) { return d; });
     
-    if (barTitle != null)
-        barTitle.remove();
-    barTitle = svg.append("g")
-                .attr("width", 200)
-                .attr("height", 50)
-                .selectAll("text")
-                .data(["Bar"])
-                .enter()
-                .append("text")
-                .attr("x", width * 0.77)
-                .attr("y", height * 0.406)
-                .attr('class', 'legend')
-                .text(function (d) { return d; });
-    
-    if (trendTitle != null)
-        trendTitle.remove();
-    trendTitle = svg.append("g")
-                .attr("width", 200)
-                .attr("height", 50)
-                .selectAll("text")
-                .data(["Trend"])
-                .enter()
-                .append("text")
-                .attr("x", width * 0.77)
-                .attr("y", height * 0.528)
-                .attr('class', 'legend')
-                .text(function (d) { return d; });
 }
 
 //BAR CHARTS
 function drawBarCharts() {
     barCharts = [];
-    barChartWidth = chartWidth*1.4/numBarCharts - 20;
+    var buffer = 50;
+    //barChartWidth = chartWidth*1.4/selectedBarCharts.length - 20;
+    barChartWidth = chartWidth*1.66/selectedBarCharts.length - buffer;
     barXAxes = [];
-    for (var i = 0; i < numBarCharts; i++) {
+    for (var i = 0; i < selectedBarCharts.length; i++) {
         chartData = filterBarData(selectedBarCharts[i]);
         var chart = new dimple.chart(svg, chartData);
-        chart.setBounds(((barChartWidth + 60) * i) + 60, 30, barChartWidth, 300);
+        chart.setBounds(((barChartWidth+buffer) * i) + 60, 30, barChartWidth, 300);
         var xAxis = chart.addCategoryAxis("x", "City");
         var yAxis = 
             chart.addMeasureAxis("y", selectedBarCharts[i]);
@@ -529,9 +558,10 @@ function toggleCity(cityName) {
     }
     
     drawLegend();
+    drawChartMenus();
     
     //Filter Charts
-    for (var i = 0; i < numBarCharts; i++) {
+    for (var i = 0; i < selectedBarCharts.length; i++) {
         barCharts[i].data = filterBarData(selectedBarCharts[i]);
         barCharts[i].draw(300);
         barXAxes[i].shapes.selectAll("text").remove(); 
@@ -545,6 +575,7 @@ function toggleCity(cityName) {
 function UpdateCharts() {
     svg.selectAll("*").remove();
     drawLegend();
+    drawChartMenus();
     drawBarCharts();
     drawTrendChart();
 }
