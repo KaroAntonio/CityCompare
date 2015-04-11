@@ -6,8 +6,10 @@
 <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 <script src="http://dimplejs.org/dist/dimple.v2.1.2.min.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
-<title>Live Alberta</title>
+<script src="d3.slider.js"></script>
 <link rel="stylesheet" type="text/css" href="style.css">
+<link rel="stylesheet" type="text/css" href="d3.slider.css">
+<title>Live Alberta</title>
 </head>
 
 <body>
@@ -33,7 +35,11 @@ var width = 1000,
     chartWidth = width * 0.6,
     legendOffset = width * 0.054,
     menuXoffset = width * 0.7,
-    menuYoffset = height * 0.36;
+    menuYoffset = height * 0.36,
+    barChartHeight = 300,
+    iconInset = width * 0.03,
+    iconYInset = height * 0.7,
+    iconSize = 12;
 
 var msvg = d3.select("#container").append("svg")
     .attr("width", width)
@@ -41,7 +47,7 @@ var msvg = d3.select("#container").append("svg")
 
 //Charts are on a seperate svg element
 var svg = dimple.newSvg("#charts", 1100, 800); 
-
+d3.slider();
 //Load All data sets asynchronously in a nested callbacks
 d3.tsv("barData.tsv", function (barData) {
 d3.tsv("trendData.tsv", function (trendData) {
@@ -55,7 +61,8 @@ for (var i = 0; i < trendData.length; i++) {
     trendData[i].Month = format.parse(trendData[i].Month);
 }
 
-var selectedTrendCharts = [
+var optimumValues = {},
+    selectedTrendCharts = [
     Object.keys(trendData[0])[2]],
     selectedBarCharts = [
     Object.keys(barData[0])[1],
@@ -73,7 +80,7 @@ var trendChart;
 var selectableBarCharts = [],
     barCharts = []; //An Array containing all dimple bar charts
 var barXAxes = [],
-    barYaxes = [],
+    barYAxes = [],
     trendYaxis;
 var chartData;
     
@@ -100,7 +107,8 @@ var legendBox,
     barTitle,
     barList,
     listButtons,
-    barChartTitles;
+    barChartTitles,
+    iconG;
     
 var projection = d3.geo.mercator()
         .scale(1900)
@@ -168,16 +176,56 @@ var tip = d3.tip()
 msvg.call(tip);
 svg.call(tip); 
     
-//Draw All Elements
+//Draw All Elements (Order matters)
+drawMap();
+drawIcons();
 drawBarCharts();
 drawTrendChart();
 drawChartMenus();
-drawMap();
 drawLegend();
     
 function mapCity(cityName, c) {
     //Map city names to their markers
     cityMarkers[cityName] = c;
+}
+    
+function drawIcons() {
+    var backgroundColor = "#444";
+    
+    iconG = svg.append("g");
+    
+    //Info/Help Icon
+    iconG.selectAll("circle")
+        .remove();
+    iconG.selectAll("text")
+        .remove();
+    iconG.selectAll("polygon")
+        .remove();
+    
+    var i = iconG.selectAll("text")
+            .data(["i"])
+            .enter()
+            .append("text")
+            .attr("x", width - iconInset - 2)
+            .attr("y", iconYInset + 8)
+            .attr('class', 'icon')
+            .text(function (d) { return d; });
+                 
+    var circle = iconG.append("circle")
+            .attr("cy", iconYInset )
+            .attr("cx", width - iconInset )
+            .attr("r", iconSize)
+            .attr("stroke", backgroundColor)
+            .attr("stroke-width", 2)
+            .attr("fill", 'rgba(255,255,255, 0)')
+            .on("click", function() {})
+            .on("mouseover", function(d) {
+                d3.select(this).attr("stroke", '#454545'); 
+                iconG.selectAll("text").attr('class', 'iconHover'); })
+            .on("mouseout", function(d) {
+                d3.select(this).attr("stroke", backgroundColor); 
+                iconG.selectAll("text").attr('class', 'icon'); });
+    
 }
 
 function drawChartMenus() {
@@ -205,7 +253,7 @@ function drawChartMenus() {
                         selectableBarCharts.push(chart)
                     }
                 }
-                console.log(selectableBarCharts);
+                
                 return selectableBarCharts;
             })
             .enter()
@@ -401,8 +449,12 @@ function drawMap() {
             toggleCity(d.properties["marker-symbol"]);
         });
 }
+    
 
 function drawLegend() {
+    //Rank Cities
+    rankCities();
+    
     //Cities Legend
     if (legendBox != null)
         legendBox.remove();
@@ -422,7 +474,7 @@ function drawLegend() {
             .attr("width", 200)
             .attr("height", 50)
             .selectAll("text")
-            .data(["Selected Cities"])
+            .data(["Cities Ranked \u2193"])
             .enter()
             .append("text")
             .attr("x", legendOffset*0.9)
@@ -509,7 +561,8 @@ function drawBarCharts() {
     for (var i = 0; i < selectedBarCharts.length; i++) {
         chartData = filterBarData(selectedBarCharts[i]);
         var chart = new dimple.chart(svg, chartData);
-        chart.setBounds(((barChartWidth+buffer) * i) + 60, 30, barChartWidth, 300);
+        var chartXOffset = ((barChartWidth+buffer) * i) + 60;
+        chart.setBounds(chartXOffset, 30, barChartWidth, barChartHeight);
         var xAxis = chart.addCategoryAxis("x", "City");
         var yAxis = 
             chart.addMeasureAxis("y", selectedBarCharts[i]);
@@ -526,10 +579,80 @@ function drawBarCharts() {
         barCharts.push(chart);
         barXAxes.push(xAxis);
         barYAxes.push(yAxis);
+        
     }
     
+    for (var i = 0; i < selectedBarCharts.length; i++){
+        var chartXOffset = ((barChartWidth+buffer) * i) + 60;
+        drawSlider(chartXOffset, 
+                   barYAxes[i], 
+                   selectedBarCharts[i],
+                    barChartWidth);
+    }
 }
+    
+function drawSlider(chartXOffset, yAxis, chartName, barChartWidth) {
+    
+    var scale = d3.scale.linear()
+            .domain([yAxis._min,yAxis._max])
+            .range([30, barChartHeight + 30])
+            .clamp(true);
+    
+    var brush = d3.svg.brush()
+        .y(scale)
+        .extent([0, 0])
+        .on("brush", brushed);
+    
+    var slider = svg.append("g")
+        .attr("class", "slider")
+        .call(brush);
+    
+    slider.selectAll(".extent,.resize")
+        .remove();
+    
+    var guide = slider.append("rect")
+        .attr("fill", "#fff")
+        .attr("y", 30)
+        .attr("transform", "translate(" + chartXOffset + "," + 0 + ")")
+        .attr("width", barChartWidth)
+        .attr("height", 2);
+    
+    var handle = slider.append("circle")
+        .attr("class", "handle")
+        .attr("transform", "translate(" + chartXOffset + "," + 0 + ")")
+        .attr("r", 6);
+    
+    
+        
+    
+    var extent = [0,0];
+    if (optimumValues.hasOwnProperty(chartName))
+        extent = [yAxis._max - optimumValues[chartName],
+                  yAxis._max - optimumValues[chartName]];
+    slider
+        .call(brush.event)
+        .transition() // gratuitous intro!
+        .duration(0)
+        .call(brush.extent(extent))
+        .call(brush.event);
+    
+    function brushed() {
+        
+        var value = brush.extent()[1];
 
+        if (d3.event.sourceEvent) { // not a programmatic event
+            value = (scale.invert(d3.mouse(this)[1]));
+            brush.extent([value, value]);
+        }
+        optimumValues[chartName] = yAxis._max - value;
+        
+        drawLegend();
+        handle.attr("cy", scale(value));
+        guide.attr("y", scale(value));
+      
+    }
+}
+    
 //TREND CHART
 function drawTrendChart() {
     chartData = dimple.filterData(trendData, "City", selectedCities);
@@ -551,6 +674,42 @@ function drawTrendChart() {
     trendYaxis = yAxis;
 }
 
+function rankCities() {
+    //Rank cities by their aggregate optimality across bar charts
+    var cityOptimality = {};
+    
+    for (var j = 0; j < selectedCities.length; j++) {
+        var cityData;
+        var city = selectedCities[j];
+        
+        for(var k = 0; k < barData.length; k++)
+            if (barData[k]['City'] == city)
+                cityData = barData[k];
+        cityOptimality[city] = 0;
+        var numValues = 0;
+        for (var i = 0; i < selectedBarCharts.length; i++){
+            var chart = selectedBarCharts[i];
+            
+            var optimal = optimumValues[chart];
+            var value = cityData[chart];
+            
+            var valueRange = barYAxes[i]._max - barYAxes[i]._min;
+        
+            var optimality = 1 - Math.abs((value-optimal)/valueRange);
+            if (optimality != 0)
+                numValues++;
+            cityOptimality[city] += optimality;
+        }
+        //Average Optimality over Number of Relevant Values
+        cityOptimality[city] = cityOptimality[city]/numValues
+    }
+    
+    selectedCities.sort(function(a,b) { 
+        return parseFloat(cityOptimality[b]) - parseFloat(cityOptimality[a]) 
+    });
+    
+    
+}
     
 function toggleCity(cityName) {
     //CHECK if city is selected
@@ -587,10 +746,12 @@ function toggleCity(cityName) {
     
 function UpdateCharts() {
     svg.selectAll("*").remove();
+    drawTrendChart();
+    drawBarCharts();
     drawLegend();
     drawChartMenus();
-    drawBarCharts();
-    drawTrendChart();
+    drawIcons();
+     
 }
     
 function filterBarData(yValue) {
