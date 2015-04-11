@@ -5,27 +5,102 @@ svg { position:fixed; top:1; bottom:0; left:0; right:1; z-index: 1; }
 
 .title {
     margin: 0px;
-    margin: 0px;
     font: 60px sans-serif;
-    width:auto;
-    color: #ffffff;
+    width: auto;
+    color: #fff;
     pointer-events: none;
     text-align: center;
-    background: #444444;
+    text-image: url("plainsky.jpg");
+    background-image: url("plainsky.jpg");
+    background-size:auto auto;
+    background-position:center 1030px;
+    -webkit-font-smoothing: antialiased;
+}
+
+.legend {
+    margin: 0px;
+    font: 18px sans-serif;
+    width: auto;
+    color: #ffffff;
+    text-align: left;
+    z-index: 10;
+}
+
+.legendTitle {
+    margin: 0px;
+    font: 20px sans-serif;
+    width: auto;
+    color: #fff;
+    text-align: left;
+    z-index: 10;
+}
+
+.menuTitle {
+    margin: 0px;
+    font: 22px sans-serif;
+    width: auto;
+    pointer-events: none;
+    text-align: left;
+    z-index: 10;
+} 
+
+.menuButton {
+    margin: 0px;
+    font: 30px sans-serif;
+    width: auto;
+    text-align: left;
+} 
+
+.barList {
+    margin: 0px;
+    font: 16px sans-serif;
+    width: auto;
+    text-align: left;
+} 
+
+#barMenu1 {
+    position: fixed;
+    left: 80%;
+    z-index: 10;
+}
+
+#barMenu2 {
+    position: fixed;
+    left: 80%;
+    z-index: 10;
+}
+
+#barMenu3 {
+    position: fixed;
+    left: 80%;
+    z-index: 10;
+}
+
+#barMenu4 {
+    position: fixed;
+    left: 80%;
+    z-index: 10;
+}
+
+#trendMenu1 {
+    position: fixed;
+    left: 80%;
+    top: 71%;
+    z-index: 10;
 }
 
 #container {
     position: fixed;
     left: 2%;
     top: 15%;
-    text-anchor: middle;
+    text-anchor: left;
 }
 
 #charts {
     position: fixed;
     left: 27%;
     top: 10%;
-    text-anchor: middle;
+    text-anchor: left;
     z-index: 5;
 }
 
@@ -43,9 +118,10 @@ svg { position:fixed; top:1; bottom:0; left:0; right:1; z-index: 1; }
     font-family: sans-serif;
     font-weight: normal;
     font-size: 14px;
-    padding: 2px;
+    padding: 6px;
     background: #777777;
     color: #fff;
+    left: 40px;
     border-radius: 2px;
     pointer-events: none;
     z-index: 10;
@@ -53,14 +129,15 @@ svg { position:fixed; top:1; bottom:0; left:0; right:1; z-index: 1; }
 
 /* Creates a small triangle extender for the tooltip */
 .d3-tip:after {
-  box-sizing: border-box;
-  display: inline;
-  font-size: 10px;
-  width: 100%;
-  line-height: 1;
-  color: #777777;
-  position: absolute;
-  pointer-events: none;
+    box-sizing: border-box;
+    display: inline;
+    font-size: 10px;
+    width: 100%;
+    opacity: 0;
+    line-height: 1;
+    color: #ffffff;
+    position: absolute;
+    pointer-events: none;
 }
 
 /* Northward tooltips */
@@ -95,4 +172,54 @@ svg { position:fixed; top:1; bottom:0; left:0; right:1; z-index: 1; }
   margin: -4px 0 0 -1px;
   top: 50%;
   left: 100%;
+}
+
+/* Slider */
+.axis {
+  font: 10px sans-serif;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.axis .domain {
+  fill: none;
+  stroke: #000;
+  stroke-opacity: .3;
+  stroke-width: 10px;
+  stroke-linecap: round;
+}
+
+.axis .halo {
+  fill: none;
+  stroke: #ddd;
+  stroke-width: 8px;
+  stroke-linecap: round;
+}
+
+.slider .handle {
+  fill: #fff;
+  stroke: #000;
+  stroke-opacity: .5;
+  stroke-width: 1.25px;
+    z-index: 20;
+}
+
+/* Icon */
+.icon {
+    font: 20px sans-serif;
+    fill: #dddddd;
+    z-index: 5;
+    -webkit-user-select: none; /* Chrome/Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none;
+}
+
+.iconHover {
+    font: 21px sans-serif;
+    fill: #454545;
+    z-index: 5;
+    -webkit-user-select: none; /* Chrome/Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none;
 }
