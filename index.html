@@ -72,7 +72,9 @@ var numBarCharts = selectedBarCharts.length,
 var trendChart;
 var selectableBarCharts = [],
     barCharts = []; //An Array containing all dimple bar charts
-var barXAxes = [];
+var barXAxes = [],
+    barYaxes = [],
+    trendYaxis;
 var chartData;
     
 for (var i = 0; i < barChartTypes.length; i++) {
@@ -97,7 +99,8 @@ var legendBox,
     trendTitle,
     barTitle,
     barList,
-    listButtons;
+    listButtons,
+    barChartTitles;
     
 var projection = d3.geo.mercator()
         .scale(1900)
@@ -318,6 +321,9 @@ function drawChartMenus() {
                 .on("mouseout", function(d) {
                      d3.select(this).attr('fill', '#000'); });
     
+    if (barChartTitles != null)
+        barChartTitles.remove();
+    
     if (listButtons != null)
         listButtons.remove();
     
@@ -496,10 +502,10 @@ function drawLegend() {
 //BAR CHARTS
 function drawBarCharts() {
     barCharts = [];
-    var buffer = 50;
-    //barChartWidth = chartWidth*1.4/selectedBarCharts.length - 20;
+    var buffer = 60;
     barChartWidth = chartWidth*1.66/selectedBarCharts.length - buffer;
     barXAxes = [];
+    barYAxes = [];
     for (var i = 0; i < selectedBarCharts.length; i++) {
         chartData = filterBarData(selectedBarCharts[i]);
         var chart = new dimple.chart(svg, chartData);
@@ -515,9 +521,11 @@ function drawBarCharts() {
         bars.addEventHandler("mouseover", tip.show);
         bars.addEventHandler("mouseout", tip.hide);
         chart.draw(300);
+        yAxis.titleShape.style("font-size","18"); 
         xAxis.shapes.selectAll("text").remove(); 
         barCharts.push(chart);
         barXAxes.push(xAxis);
+        barYAxes.push(yAxis);
     }
     
 }
@@ -530,7 +538,7 @@ function drawTrendChart() {
     var x = trendChart.addTimeAxis("x", "Month");
     x.tickFormat = "%y-%b";
     x.addOrderRule("Date");
-    trendChart.addMeasureAxis("y", trendValue);
+    var yAxis = trendChart.addMeasureAxis("y", trendValue);
     var trends = trendChart.addSeries("City", dimple.plot.line);
     trends.addEventHandler("click", function (d) {
         toggleCity(d.seriesValue[0]); });
@@ -539,6 +547,8 @@ function drawTrendChart() {
     trends.addEventHandler("mouseover", tip.show);
     trends.addEventHandler("mouseout", tip.hide);
     trendChart.draw(300);
+    yAxis.titleShape.style("font-size","18");
+    trendYaxis = yAxis;
 }
 
     
@@ -565,11 +575,14 @@ function toggleCity(cityName) {
         barCharts[i].data = filterBarData(selectedBarCharts[i]);
         barCharts[i].draw(300);
         barXAxes[i].shapes.selectAll("text").remove(); 
+        barYAxes[i].titleShape.style("font-size","18");
+        
     }
     
     trendChart.data = 
             dimple.filterData(trendData, "City", selectedCities);
     trendChart.draw(300);
+    trendYaxis.titleShape.style("font-size","18");
 }
     
 function UpdateCharts() {

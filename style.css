@@ -7,10 +7,14 @@ svg { position:fixed; top:1; bottom:0; left:0; right:1; z-index: 1; }
     margin: 0px;
     font: 60px sans-serif;
     width: auto;
-    color: #ffffff;
+    color: #fff;
     pointer-events: none;
     text-align: center;
-    background: #444444;
+    text-image: url("plainsky.jpg");
+    background-image: url("plainsky.jpg");
+    background-size:auto auto;
+    background-position:center 1030px;
+    -webkit-font-smoothing: antialiased;
 }
 
 .legend {
