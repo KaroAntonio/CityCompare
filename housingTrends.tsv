@@ -1,0 +1,874 @@
+Month	City	Housing Projects Started
+07-Jan	Calgary	800
+07-Jan	Edmonton	1145
+07-Jan	Red Deer	211
+07-Jan	Lethbridge	71
+07-Jan	Medicine Hat	59
+07-Jan	Wood Buffalo	361
+07-Jan	Grande Prairie	287
+07-Jan	Five Cas	989
+07-Jan	Seven Major Urban Centres	2887
+07-Feb	Calgary	732
+07-Feb	Edmonton	1106
+07-Feb	Red Deer	176
+07-Feb	Lethbridge	104
+07-Feb	Medicine Hat	40
+07-Feb	Wood Buffalo	126
+07-Feb	Grande Prairie	54
+07-Feb	Five Cas	500
+07-Feb	Seven Major Urban Centres	2338
+07-Mar	Calgary	1242
+07-Mar	Edmonton	1169
+07-Mar	Red Deer	106
+07-Mar	Lethbridge	122
+07-Mar	Medicine Hat	122
+07-Mar	Wood Buffalo	344
+07-Mar	Grande Prairie	118
+07-Mar	Five Cas	812
+07-Mar	Seven Major Urban Centres	3223
+07-Apr	Calgary	1370
+07-Apr	Edmonton	1695
+07-Apr	Red Deer	117
+07-Apr	Lethbridge	75
+07-Apr	Medicine Hat	120
+07-Apr	Wood Buffalo	63
+07-Apr	Grande Prairie	218
+07-Apr	Five Cas	593
+07-Apr	Seven Major Urban Centres	3658
+07-May	Calgary	1633
+07-May	Edmonton	1132
+07-May	Red Deer	122
+07-May	Lethbridge	167
+07-May	Medicine Hat	73
+07-May	Wood Buffalo	199
+07-May	Grande Prairie	111
+07-May	Five Cas	672
+07-May	Seven Major Urban Centres	3437
+07-Jun	Calgary	1060
+07-Jun	Edmonton	1341
+07-Jun	Red Deer	141
+07-Jun	Lethbridge	102
+07-Jun	Medicine Hat	203
+07-Jun	Wood Buffalo	156
+07-Jun	Grande Prairie	90
+07-Jun	Five Cas	692
+07-Jun	Seven Major Urban Centres	3093
+07-Jul	Calgary	1084
+07-Jul	Edmonton	1241
+07-Jul	Red Deer	122
+07-Jul	Lethbridge	114
+07-Jul	Medicine Hat	72
+07-Jul	Wood Buffalo	132
+07-Jul	Grande Prairie	109
+07-Jul	Five Cas	549
+07-Jul	Seven Major Urban Centres	2874
+07-Aug	Calgary	1497
+07-Aug	Edmonton	1278
+07-Aug	Red Deer	80
+07-Aug	Lethbridge	90
+07-Aug	Medicine Hat	120
+07-Aug	Wood Buffalo	123
+07-Aug	Grande Prairie	165
+07-Aug	Five Cas	578
+07-Aug	Seven Major Urban Centres	3353
+07-Sep	Calgary	1386
+07-Sep	Edmonton	1978
+07-Sep	Red Deer	222
+07-Sep	Lethbridge	108
+07-Sep	Medicine Hat	55
+07-Sep	Wood Buffalo	227
+07-Sep	Grande Prairie	158
+07-Sep	Five Cas	770
+07-Sep	Seven Major Urban Centres	4134
+07-Oct	Calgary	1324
+07-Oct	Edmonton	1181
+07-Oct	Red Deer	61
+07-Oct	Lethbridge	100
+07-Oct	Medicine Hat	113
+07-Oct	Wood Buffalo	76
+07-Oct	Grande Prairie	76
+07-Oct	Five Cas	426
+07-Oct	Seven Major Urban Centres	2931
+07-Nov	Calgary	776
+07-Nov	Edmonton	1091
+07-Nov	Red Deer	152
+07-Nov	Lethbridge	73
+07-Nov	Medicine Hat	70
+07-Nov	Wood Buffalo	83
+07-Nov	Grande Prairie	208
+07-Nov	Five Cas	586
+07-Nov	Seven Major Urban Centres	2453
+07-Dec	Calgary	601
+07-Dec	Edmonton	578
+07-Dec	Red Deer	48
+07-Dec	Lethbridge	79
+07-Dec	Medicine Hat	52
+07-Dec	Wood Buffalo	285
+07-Dec	Grande Prairie	35
+07-Dec	Five Cas	499
+07-Dec	Seven Major Urban Centres	1678
+08-Jan	Calgary	711
+08-Jan	Edmonton	1098
+08-Jan	Red Deer	32
+08-Jan	Lethbridge	135
+08-Jan	Medicine Hat	42
+08-Jan	Wood Buffalo	65
+08-Jan	Grande Prairie	55
+08-Jan	Five Cas	329
+08-Jan	Seven Major Urban Centres	2185
+08-Feb	Calgary	877
+08-Feb	Edmonton	692
+08-Feb	Red Deer	58
+08-Feb	Lethbridge	64
+08-Feb	Medicine Hat	28
+08-Feb	Wood Buffalo	117
+08-Feb	Grande Prairie	31
+08-Feb	Five Cas	298
+08-Feb	Seven Major Urban Centres	1867
+08-Mar	Calgary	3068
+08-Mar	Edmonton	478
+08-Mar	Red Deer	29
+08-Mar	Lethbridge	72
+08-Mar	Medicine Hat	104
+08-Mar	Wood Buffalo	254
+08-Mar	Grande Prairie	26
+08-Mar	Five Cas	485
+08-Mar	Seven Major Urban Centres	4031
+08-Apr	Calgary	1096
+08-Apr	Edmonton	683
+08-Apr	Red Deer	27
+08-Apr	Lethbridge	89
+08-Apr	Medicine Hat	74
+08-Apr	Wood Buffalo	55
+08-Apr	Grande Prairie	10
+08-Apr	Five Cas	255
+08-Apr	Seven Major Urban Centres	2034
+08-May	Calgary	1488
+08-May	Edmonton	586
+08-May	Red Deer	144
+08-May	Lethbridge	59
+08-May	Medicine Hat	57
+08-May	Wood Buffalo	81
+08-May	Grande Prairie	57
+08-May	Five Cas	398
+08-May	Seven Major Urban Centres	2472
+08-Jun	Calgary	577
+08-Jun	Edmonton	558
+08-Jun	Red Deer	44
+08-Jun	Lethbridge	68
+08-Jun	Medicine Hat	55
+08-Jun	Wood Buffalo	92
+08-Jun	Grande Prairie	40
+08-Jun	Five Cas	299
+08-Jun	Seven Major Urban Centres	1434
+08-Jul	Calgary	877
+08-Jul	Edmonton	407
+08-Jul	Red Deer	37
+08-Jul	Lethbridge	81
+08-Jul	Medicine Hat	54
+08-Jul	Wood Buffalo	200
+08-Jul	Grande Prairie	137
+08-Jul	Five Cas	509
+08-Jul	Seven Major Urban Centres	1793
+08-Aug	Calgary	594
+08-Aug	Edmonton	425
+08-Aug	Red Deer	21
+08-Aug	Lethbridge	81
+08-Aug	Medicine Hat	39
+08-Aug	Wood Buffalo	176
+08-Aug	Grande Prairie	67
+08-Aug	Five Cas	384
+08-Aug	Seven Major Urban Centres	1403
+08-Sep	Calgary	573
+08-Sep	Edmonton	428
+08-Sep	Red Deer	34
+08-Sep	Lethbridge	49
+08-Sep	Medicine Hat	61
+08-Sep	Wood Buffalo	92
+08-Sep	Grande Prairie	307
+08-Sep	Five Cas	543
+08-Sep	Seven Major Urban Centres	1544
+08-Oct	Calgary	599
+08-Oct	Edmonton	612
+08-Oct	Red Deer	42
+08-Oct	Lethbridge	78
+08-Oct	Medicine Hat	32
+08-Oct	Wood Buffalo	239
+08-Oct	Grande Prairie	80
+08-Oct	Five Cas	471
+08-Oct	Seven Major Urban Centres	1682
+08-Nov	Calgary	575
+08-Nov	Edmonton	279
+08-Nov	Red Deer	62
+08-Nov	Lethbridge	89
+08-Nov	Medicine Hat	24
+08-Nov	Wood Buffalo	84
+08-Nov	Grande Prairie	151
+08-Nov	Five Cas	410
+08-Nov	Seven Major Urban Centres	1264
+08-Dec	Calgary	403
+08-Dec	Edmonton	324
+08-Dec	Red Deer	42
+08-Dec	Lethbridge	48
+08-Dec	Medicine Hat	65
+08-Dec	Wood Buffalo	37
+08-Dec	Grande Prairie	49
+08-Dec	Five Cas	241
+08-Dec	Seven Major Urban Centres	968
+09-Jan	Calgary	243
+09-Jan	Edmonton	413
+09-Jan	Red Deer	17
+09-Jan	Lethbridge	56
+09-Jan	Medicine Hat	22
+09-Jan	Wood Buffalo	73
+09-Jan	Grande Prairie	12
+09-Jan	Five Cas	180
+09-Jan	Seven Major Urban Centres	836
+09-Feb	Calgary	206
+09-Feb	Edmonton	213
+09-Feb	Red Deer	21
+09-Feb	Lethbridge	26
+09-Feb	Medicine Hat	13
+09-Feb	Wood Buffalo	33
+09-Feb	Grande Prairie	62
+09-Feb	Five Cas	155
+09-Feb	Seven Major Urban Centres	574
+09-Mar	Calgary	297
+09-Mar	Edmonton	135
+09-Mar	Red Deer	20
+09-Mar	Lethbridge	27
+09-Mar	Medicine Hat	55
+09-Mar	Wood Buffalo	55
+09-Mar	Grande Prairie	16
+09-Mar	Five Cas	173
+09-Mar	Seven Major Urban Centres	605
+09-Apr	Calgary	321
+09-Apr	Edmonton	355
+09-Apr	Red Deer	15
+09-Apr	Lethbridge	37
+09-Apr	Medicine Hat	9
+09-Apr	Wood Buffalo	54
+09-Apr	Grande Prairie	3
+09-Apr	Five Cas	118
+09-Apr	Seven Major Urban Centres	794
+09-May	Calgary	480
+09-May	Edmonton	346
+09-May	Red Deer	22
+09-May	Lethbridge	40
+09-May	Medicine Hat	25
+09-May	Wood Buffalo	27
+09-May	Grande Prairie	22
+09-May	Five Cas	136
+09-May	Seven Major Urban Centres	962
+09-Jun	Calgary	434
+09-Jun	Edmonton	450
+09-Jun	Red Deer	65
+09-Jun	Lethbridge	98
+09-Jun	Medicine Hat	16
+09-Jun	Wood Buffalo	317
+09-Jun	Grande Prairie	66
+09-Jun	Five Cas	562
+09-Jun	Seven Major Urban Centres	1446
+09-Jul	Calgary	755
+09-Jul	Edmonton	451
+09-Jul	Red Deer	43
+09-Jul	Lethbridge	109
+09-Jul	Medicine Hat	13
+09-Jul	Wood Buffalo	27
+09-Jul	Grande Prairie	56
+09-Jul	Five Cas	248
+09-Jul	Seven Major Urban Centres	1454
+09-Aug	Calgary	548
+09-Aug	Edmonton	558
+09-Aug	Red Deer	63
+09-Aug	Lethbridge	179
+09-Aug	Medicine Hat	14
+09-Aug	Wood Buffalo	63
+09-Aug	Grande Prairie	86
+09-Aug	Five Cas	405
+09-Aug	Seven Major Urban Centres	1511
+09-Sep	Calgary	813
+09-Sep	Edmonton	699
+09-Sep	Red Deer	79
+09-Sep	Lethbridge	81
+09-Sep	Medicine Hat	14
+09-Sep	Wood Buffalo	38
+09-Sep	Grande Prairie	77
+09-Sep	Five Cas	289
+09-Sep	Seven Major Urban Centres	1801
+09-Oct	Calgary	732
+09-Oct	Edmonton	947
+09-Oct	Red Deer	69
+09-Oct	Lethbridge	67
+09-Oct	Medicine Hat	76
+09-Oct	Wood Buffalo	212
+09-Oct	Grande Prairie	76
+09-Oct	Five Cas	500
+09-Oct	Seven Major Urban Centres	2179
+09-Nov	Calgary	832
+09-Nov	Edmonton	938
+09-Nov	Red Deer	59
+09-Nov	Lethbridge	95
+09-Nov	Medicine Hat	15
+09-Nov	Wood Buffalo	135
+09-Nov	Grande Prairie	85
+09-Nov	Five Cas	389
+09-Nov	Seven Major Urban Centres	2159
+09-Dec	Calgary	657
+09-Dec	Edmonton	812
+09-Dec	Red Deer	24
+09-Dec	Lethbridge	92
+09-Dec	Medicine Hat	15
+09-Dec	Wood Buffalo	54
+09-Dec	Grande Prairie	25
+09-Dec	Five Cas	210
+09-Dec	Seven Major Urban Centres	1679
+10-Jan	Calgary	514
+10-Jan	Edmonton	577
+10-Jan	Red Deer	49
+10-Jan	Lethbridge	44
+10-Jan	Medicine Hat	15
+10-Jan	Wood Buffalo	55
+10-Jan	Grande Prairie	17
+10-Jan	Five Cas	180
+10-Jan	Seven Major Urban Centres	1271
+10-Feb	Calgary	545
+10-Feb	Edmonton	484
+10-Feb	Red Deer	29
+10-Feb	Lethbridge	66
+10-Feb	Medicine Hat	16
+10-Feb	Wood Buffalo	28
+10-Feb	Grande Prairie	24
+10-Feb	Five Cas	163
+10-Feb	Seven Major Urban Centres	1192
+10-Mar	Calgary	904
+10-Mar	Edmonton	813
+10-Mar	Red Deer	128
+10-Mar	Lethbridge	41
+10-Mar	Medicine Hat	23
+10-Mar	Wood Buffalo	38
+10-Mar	Grande Prairie	10
+10-Mar	Five Cas	240
+10-Mar	Seven Major Urban Centres	1957
+10-Apr	Calgary	909
+10-Apr	Edmonton	1407
+10-Apr	Red Deer	46
+10-Apr	Lethbridge	53
+10-Apr	Medicine Hat	36
+10-Apr	Wood Buffalo	43
+10-Apr	Grande Prairie	40
+10-Apr	Five Cas	218
+10-Apr	Seven Major Urban Centres	2534
+10-May	Calgary	862
+10-May	Edmonton	989
+10-May	Red Deer	57
+10-May	Lethbridge	67
+10-May	Medicine Hat	26
+10-May	Wood Buffalo	47
+10-May	Grande Prairie	79
+10-May	Five Cas	276
+10-May	Seven Major Urban Centres	2127
+10-Jun	Calgary	685
+10-Jun	Edmonton	951
+10-Jun	Red Deer	46
+10-Jun	Lethbridge	76
+10-Jun	Medicine Hat	29
+10-Jun	Wood Buffalo	64
+10-Jun	Grande Prairie	75
+10-Jun	Five Cas	290
+10-Jun	Seven Major Urban Centres	1926
+10-Jul	Calgary	1166
+10-Jul	Edmonton	949
+10-Jul	Red Deer	42
+10-Jul	Lethbridge	54
+10-Jul	Medicine Hat	22
+10-Jul	Wood Buffalo	53
+10-Jul	Grande Prairie	62
+10-Jul	Five Cas	233
+10-Jul	Seven Major Urban Centres	2348
+10-Aug	Calgary	858
+10-Aug	Edmonton	690
+10-Aug	Red Deer	36
+10-Aug	Lethbridge	98
+10-Aug	Medicine Hat	26
+10-Aug	Wood Buffalo	66
+10-Aug	Grande Prairie	44
+10-Aug	Five Cas	270
+10-Aug	Seven Major Urban Centres	1818
+10-Sep	Calgary	796
+10-Sep	Edmonton	873
+10-Sep	Red Deer	34
+10-Sep	Lethbridge	53
+10-Sep	Medicine Hat	59
+10-Sep	Wood Buffalo	196
+10-Sep	Grande Prairie	35
+10-Sep	Five Cas	377
+10-Sep	Seven Major Urban Centres	2046
+10-Oct	Calgary	784
+10-Oct	Edmonton	755
+10-Oct	Red Deer	33
+10-Oct	Lethbridge	91
+10-Oct	Medicine Hat	23
+10-Oct	Wood Buffalo	63
+10-Oct	Grande Prairie	52
+10-Oct	Five Cas	262
+10-Oct	Seven Major Urban Centres	1801
+10-Nov	Calgary	555
+10-Nov	Edmonton	755
+10-Nov	Red Deer	32
+10-Nov	Lethbridge	59
+10-Nov	Medicine Hat	34
+10-Nov	Wood Buffalo	58
+10-Nov	Grande Prairie	30
+10-Nov	Five Cas	213
+10-Nov	Seven Major Urban Centres	1523
+10-Nov	Calgary	486
+10-Dec	Edmonton	558
+10-Dec	Red Deer	58
+10-Dec	Lethbridge	60
+10-Dec	Medicine Hat	23
+10-Dec	Wood Buffalo	51
+10-Dec	Grande Prairie	35
+10-Dec	Five Cas	227
+10-Dec	Seven Major Urban Centres	1271
+11-Jan	Calgary	518
+11-Jan	Edmonton	363
+11-Jan	Red Deer	29
+11-Jan	Lethbridge	96
+11-Jan	Medicine Hat	4
+11-Jan	Wood Buffalo	44
+11-Jan	Grande Prairie	20
+11-Jan	Five Cas	193
+11-Jan	Seven Major Urban Centres	1074
+11-Feb	Calgary	411
+11-Feb	Edmonton	360
+11-Feb	Red Deer	18
+11-Feb	Lethbridge	28
+11-Feb	Medicine Hat	5
+11-Feb	Wood Buffalo	35
+11-Feb	Grande Prairie	25
+11-Feb	Five Cas	111
+11-Feb	Seven Major Urban Centres	882
+11-Mar	Calgary	403
+11-Mar	Edmonton	713
+11-Mar	Red Deer	25
+11-Mar	Lethbridge	100
+11-Mar	Medicine Hat	7
+11-Mar	Wood Buffalo	36
+11-Mar	Grande Prairie	13
+11-Mar	Five Cas	181
+11-Mar	Seven Major Urban Centres	1297
+11-Apr	Calgary	556
+11-Apr	Edmonton	758
+11-Apr	Red Deer	45
+11-Apr	Lethbridge	21
+11-Apr	Medicine Hat	41
+11-Apr	Wood Buffalo	35
+11-Apr	Grande Prairie	45
+11-Apr	Five Cas	187
+11-Apr	Seven Major Urban Centres	1501
+11-May	Calgary	707
+11-May	Edmonton	1009
+11-May	Red Deer	50
+11-May	Lethbridge	60
+11-May	Medicine Hat	20
+11-May	Wood Buffalo	34
+11-May	Grande Prairie	68
+11-May	Five Cas	232
+11-May	Seven Major Urban Centres	1948
+11-Jun	Calgary	719
+11-Jun	Edmonton	719
+11-Jun	Red Deer	48
+11-Jun	Lethbridge	71
+11-Jun	Medicine Hat	12
+11-Jun	Wood Buffalo	146
+11-Jun	Grande Prairie	58
+11-Jun	Five Cas	335
+11-Jun	Seven Major Urban Centres	1773
+11-Jul	Calgary	658
+11-Jul	Edmonton	1034
+11-Jul	Red Deer	80
+11-Jul	Lethbridge	40
+11-Jul	Medicine Hat	14
+11-Jul	Wood Buffalo	54
+11-Jul	Grande Prairie	73
+11-Jul	Five Cas	261
+11-Jul	Seven Major Urban Centres	1953
+11-Aug	Calgary	1237
+11-Aug	Edmonton	805
+11-Aug	Red Deer	102
+11-Aug	Lethbridge	100
+11-Aug	Medicine Hat	15
+11-Aug	Wood Buffalo	82
+11-Aug	Grande Prairie	55
+11-Aug	Five Cas	354
+11-Aug	Seven Major Urban Centres	2396
+11-Sep	Calgary	810
+11-Sep	Edmonton	820
+11-Sep	Red Deer	24
+11-Sep	Lethbridge	48
+11-Sep	Medicine Hat	11
+11-Sep	Wood Buffalo	55
+11-Sep	Grande Prairie	90
+11-Sep	Five Cas	228
+11-Sep	Seven Major Urban Centres	1858
+11-Oct	Calgary	981
+11-Oct	Edmonton	1250
+11-Oct	Red Deer	45
+11-Oct	Lethbridge	39
+11-Oct	Medicine Hat	13
+11-Oct	Wood Buffalo	65
+11-Oct	Grande Prairie	46
+11-Oct	Five Cas	208
+11-Oct	Seven Major Urban Centres	2439
+11-Nov	Calgary	1106
+11-Nov	Edmonton	681
+11-Nov	Red Deer	36
+11-Nov	Lethbridge	56
+11-Nov	Medicine Hat	16
+11-Nov	Wood Buffalo	122
+11-Nov	Grande Prairie	164
+11-Nov	Five Cas	394
+11-Nov	Seven Major Urban Centres	2181
+11-Dec	Calgary	970
+11-Dec	Edmonton	691
+11-Dec	Red Deer	40
+11-Dec	Lethbridge	51
+11-Dec	Medicine Hat	10
+11-Dec	Wood Buffalo	66
+11-Dec	Grande Prairie	37
+11-Dec	Five Cas	204
+11-Dec	Seven Major Urban Centres	1865
+12-Jan	Calgary	786
+12-Jan	Edmonton	578
+12-Jan	Red Deer	12
+12-Jan	Lethbridge	27
+12-Jan	Medicine Hat	6
+12-Jan	Wood Buffalo	38
+12-Jan	Grande Prairie	16
+12-Jan	Five Cas	99
+12-Jan	Seven Major Urban Centres	1463
+12-Feb	Calgary	1345
+12-Feb	Edmonton	597
+12-Feb	Red Deer	18
+12-Feb	Lethbridge	41
+12-Feb	Medicine Hat	9
+12-Feb	Wood Buffalo	26
+12-Feb	Grande Prairie	7
+12-Feb	Five Cas	101
+12-Feb	Seven Major Urban Centres	2043
+12-Mar	Calgary	1069
+12-Mar	Edmonton	1030
+12-Mar	Red Deer	107
+12-Mar	Lethbridge	26
+12-Mar	Medicine Hat	30
+12-Mar	Wood Buffalo	39
+12-Mar	Grande Prairie	22
+12-Mar	Five Cas	224
+12-Mar	Seven Major Urban Centres	2323
+12-Apr	Calgary	1708
+12-Apr	Edmonton	967
+12-Apr	Red Deer	52
+12-Apr	Lethbridge	57
+12-Apr	Medicine Hat	14
+12-Apr	Wood Buffalo	28
+12-Apr	Grande Prairie	42
+12-Apr	Five Cas	193
+12-Apr	Seven Major Urban Centres	2868
+12-May	Calgary	949
+12-May	Edmonton	1246
+12-May	Red Deer	67
+12-May	Lethbridge	54
+12-May	Medicine Hat	30
+12-May	Wood Buffalo	54
+12-May	Grande Prairie	67
+12-May	Five Cas	272
+12-May	Seven Major Urban Centres	2467
+12-Jun	Calgary	1184
+12-Jun	Edmonton	1050
+12-Jun	Red Deer	58
+12-Jun	Lethbridge	50
+12-Jun	Medicine Hat	50
+12-Jun	Wood Buffalo	38
+12-Jun	Grande Prairie	116
+12-Jun	Five Cas	312
+12-Jun	Seven Major Urban Centres	2546
+12-Jul	Calgary	910
+12-Jul	Edmonton	1435
+12-Jul	Red Deer	49
+12-Jul	Lethbridge	97
+12-Jul	Medicine Hat	26
+12-Jul	Wood Buffalo	59
+12-Jul	Grande Prairie	35
+12-Jul	Five Cas	266
+12-Jul	Seven Major Urban Centres	2611
+12-Aug	Calgary	1039
+12-Aug	Edmonton	918
+12-Aug	Red Deer	64
+12-Aug	Lethbridge	55
+12-Aug	Medicine Hat	19
+12-Aug	Wood Buffalo	40
+12-Aug	Grande Prairie	90
+12-Aug	Five Cas	268
+12-Aug	Seven Major Urban Centres	2225
+12-Sep	Calgary	1012
+12-Sep	Edmonton	1304
+12-Sep	Red Deer	20
+12-Sep	Lethbridge	52
+12-Sep	Medicine Hat	34
+12-Sep	Wood Buffalo	29
+12-Sep	Grande Prairie	54
+12-Sep	Five Cas	189
+12-Sep	Seven Major Urban Centres	2505
+12-Oct	Calgary	980
+12-Oct	Edmonton	1187
+12-Oct	Red Deer	52
+12-Oct	Lethbridge	86
+12-Oct	Medicine Hat	18
+12-Oct	Wood Buffalo	60
+12-Oct	Grande Prairie	41
+12-Oct	Five Cas	257
+12-Oct	Seven Major Urban Centres	2424
+12-Nov	Calgary	990
+12-Nov	Edmonton	1734
+12-Nov	Red Deer	16
+12-Nov	Lethbridge	72
+12-Nov	Medicine Hat	21
+12-Nov	Wood Buffalo	64
+12-Nov	Grande Prairie	81
+12-Nov	Five Cas	254
+12-Nov	Seven Major Urban Centres	2978
+12-Dec	Calgary	866
+12-Dec	Edmonton	789
+12-Dec	Red Deer	53
+12-Dec	Lethbridge	43
+12-Dec	Medicine Hat	27
+12-Dec	Wood Buffalo	162
+12-Dec	Grande Prairie	40
+12-Dec	Five Cas	325
+12-Dec	Seven Major Urban Centres	1980
+13-Jan	Calgary	719
+13-Jan	Edmonton	619
+13-Jan	Red Deer	153
+13-Jan	Lethbridge	45
+13-Jan	Medicine Hat	11
+13-Jan	Wood Buffalo	71
+13-Jan	Grande Prairie	18
+13-Jan	Five Cas	298
+13-Jan	Seven Major Urban Centres	1636
+13-Feb	Calgary	896
+13-Feb	Edmonton	1054
+13-Feb	Red Deer	31
+13-Feb	Lethbridge	56
+13-Feb	Medicine Hat	21
+13-Feb	Wood Buffalo	58
+13-Feb	Grande Prairie	52
+13-Feb	Five Cas	218
+13-Feb	Seven Major Urban Centres	2168
+13-Mar	Calgary	890
+13-Mar	Edmonton	1176
+13-Mar	Red Deer	52
+13-Mar	Lethbridge	45
+13-Mar	Medicine Hat	16
+13-Mar	Wood Buffalo	21
+13-Mar	Grande Prairie	31
+13-Mar	Five Cas	165
+13-Mar	Seven Major Urban Centres	2231
+13-Apr	Calgary	1067
+13-Apr	Edmonton	1503
+13-Apr	Red Deer	62
+13-Apr	Lethbridge	45
+13-Apr	Medicine Hat	27
+13-Apr	Wood Buffalo	82
+13-Apr	Grande Prairie	59
+13-Apr	Five Cas	275
+13-Apr	Seven Major Urban Centres	2845
+13-May	Calgary	1078
+13-May	Edmonton	1864
+13-May	Red Deer	66
+13-May	Lethbridge	55
+13-May	Medicine Hat	29
+13-May	Wood Buffalo	63
+13-May	Grande Prairie	86
+13-May	Five Cas	299
+13-May	Seven Major Urban Centres	3241
+13-Jun	Calgary	912
+13-Jun	Edmonton	1750
+13-Jun	Red Deer	50
+13-Jun	Lethbridge	52
+13-Jun	Medicine Hat	28
+13-Jun	Wood Buffalo	112
+13-Jun	Grande Prairie	57
+13-Jun	Five Cas	299
+13-Jun	Seven Major Urban Centres	2961
+13-Jul	Calgary	1385
+13-Jul	Edmonton	1082
+13-Jul	Red Deer	36
+13-Jul	Lethbridge	43
+13-Jul	Medicine Hat	21
+13-Jul	Wood Buffalo	134
+13-Jul	Grande Prairie	72
+13-Jul	Five Cas	306
+13-Jul	Seven Major Urban Centres	2773
+13-Aug	Calgary	982
+13-Aug	Edmonton	895
+13-Aug	Red Deer	69
+13-Aug	Lethbridge	74
+13-Aug	Medicine Hat	18
+13-Aug	Wood Buffalo	142
+13-Aug	Grande Prairie	26
+13-Aug	Five Cas	329
+13-Aug	Seven Major Urban Centres	2206
+13-Sep	Calgary	904
+13-Sep	Edmonton	1077
+13-Sep	Red Deer	47
+13-Sep	Lethbridge	60
+13-Sep	Medicine Hat	16
+13-Sep	Wood Buffalo	112
+13-Sep	Grande Prairie	43
+13-Sep	Five Cas	278
+13-Sep	Seven Major Urban Centres	2259
+13-Oct	Calgary	1162
+13-Oct	Edmonton	1317
+13-Oct	Red Deer	43
+13-Oct	Lethbridge	51
+13-Oct	Medicine Hat	18
+13-Oct	Wood Buffalo	37
+13-Oct	Grande Prairie	46
+13-Oct	Five Cas	195
+13-Oct	Seven Major Urban Centres	2674
+13-Nov	Calgary	1696
+13-Nov	Edmonton	1125
+13-Nov	Red Deer	141
+13-Nov	Lethbridge	56
+13-Nov	Medicine Hat	39
+13-Nov	Wood Buffalo	76
+13-Nov	Grande Prairie	25
+13-Nov	Five Cas	337
+13-Nov	Seven Major Urban Centres	3158
+13-Dec	Calgary	896
+13-Dec	Edmonton	1227
+13-Dec	Red Deer	34
+13-Dec	Lethbridge	66
+13-Dec	Medicine Hat	20
+13-Dec	Wood Buffalo	59
+13-Dec	Grande Prairie	81
+13-Dec	Five Cas	260
+13-Dec	Seven Major Urban Centres	2383
+14-Jan	Calgary	1328
+14-Jan	Edmonton	776
+14-Jan	Red Deer	107
+14-Jan	Lethbridge	26
+14-Jan	Medicine Hat	11
+14-Jan	Wood Buffalo	91
+14-Jan	Grande Prairie	23
+14-Jan	Five Cas	258
+14-Jan	Seven Major Urban Centres	2632
+14-Feb	Calgary	1270
+14-Feb	Edmonton	787
+14-Feb	Red Deer	110
+14-Feb	Lethbridge	90
+14-Feb	Medicine Hat	11
+14-Feb	Wood Buffalo	20
+14-Feb	Grande Prairie	6
+14-Feb	Five Cas	237
+14-Feb	Seven Major Urban Centres	2294
+14-Mar	Calgary	1667
+14-Mar	Edmonton	752
+14-Mar	Red Deer	68
+14-Mar	Lethbridge	23
+14-Mar	Medicine Hat	53
+14-Mar	Wood Buffalo	8
+14-Mar	Grande Prairie	17
+14-Mar	Five Cas	169
+14-Mar	Seven Major Urban Centres	2588
+14-Apr	Calgary	1592
+14-Apr	Edmonton	1255
+14-Apr	Red Deer	65
+14-Apr	Lethbridge	52
+14-Apr	Medicine Hat	30
+14-Apr	Wood Buffalo	8
+14-Apr	Grande Prairie	11
+14-Apr	Five Cas	166
+14-Apr	Seven Major Urban Centres	3013
+14-May	Calgary	1030
+14-May	Edmonton	1216
+14-May	Red Deer	69
+14-May	Lethbridge	49
+14-May	Medicine Hat	20
+14-May	Wood Buffalo	17
+14-May	Grande Prairie	53
+14-May	Five Cas	208
+14-May	Seven Major Urban Centres	2454
+14-Jun	Calgary	2407
+14-Jun	Edmonton	1504
+14-Jun	Red Deer	52
+14-Jun	Lethbridge	65
+14-Jun	Medicine Hat	20
+14-Jun	Wood Buffalo	45
+14-Jun	Grande Prairie	76
+14-Jun	Five Cas	258
+14-Jun	Seven Major Urban Centres	4169
+14-Jul	Calgary	1354
+14-Jul	Edmonton	1126
+14-Jul	Red Deer	50
+14-Jul	Lethbridge	77
+14-Jul	Medicine Hat	18
+14-Jul	Wood Buffalo	49
+14-Jul	Grande Prairie	49
+14-Jul	Five Cas	243
+14-Jul	Seven Major Urban Centres	2723
+14-Aug	Calgary	1627
+14-Aug	Edmonton	1322
+14-Aug	Red Deer	43
+14-Aug	Lethbridge	50
+14-Aug	Medicine Hat	18
+14-Aug	Wood Buffalo	34
+14-Aug	Grande Prairie	90
+14-Aug	Five Cas	235
+14-Aug	Seven Major Urban Centres	3184
+14-Sep	Calgary	1528
+14-Sep	Edmonton	1300
+14-Sep	Red Deer	116
+14-Sep	Lethbridge	52
+14-Sep	Medicine Hat	23
+14-Sep	Wood Buffalo	30
+14-Sep	Grande Prairie	199
+14-Sep	Five Cas	420
+14-Sep	Seven Major Urban Centres	3248
+14-Oct	Calgary	1410
+14-Oct	Edmonton	1247
+14-Oct	Red Deer	72
+14-Oct	Lethbridge	58
+14-Oct	Medicine Hat	27
+14-Oct	Wood Buffalo	59
+14-Oct	Grande Prairie	111
+14-Oct	Five Cas	327
+14-Oct	Seven Major Urban Centres	2984
+14-Nov	Calgary	1078
+14-Nov	Edmonton	1501
+14-Nov	Red Deer	79
+14-Nov	Lethbridge	66
+14-Nov	Medicine Hat	22
+14-Nov	Wood Buffalo	22
+14-Nov	Grande Prairie	22
+14-Nov	Five Cas	211
+14-Nov	Seven Major Urban Centres	2790
+14-Dec	Calgary	840
+14-Dec	Edmonton	1086
+14-Dec	Red Deer	36
+14-Dec	Lethbridge	68
+14-Dec	Medicine Hat	20
+14-Dec	Wood Buffalo	126
+14-Dec	Grande Prairie	75
+14-Dec	Five Cas	325
+14-Dec	Seven Major Urban Centres	2251
+15-Jan	Calgary	747
+15-Jan	Edmonton	1832
+15-Jan	Red Deer	40
+15-Jan	Lethbridge	32
+15-Jan	Medicine Hat	16
+15-Jan	Wood Buffalo	114
+15-Jan	Grande Prairie	2
+15-Jan	Five Cas	204
+15-Jan	Seven Major Urban Centres	2783

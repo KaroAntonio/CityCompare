@@ -37,7 +37,7 @@ var width = 1000,
     menuXoffset = width * 0.7,
     menuYoffset = height * 0.36,
     barChartHeight = 300,
-    iconInset = width * 0.03,
+    iconInset = width * 0.005,
     iconYInset = height * 0.7,
     iconSize = 12;
 
@@ -50,20 +50,18 @@ var svg = dimple.newSvg("#charts", 1100, 800);
 d3.slider();
 //Load All data sets asynchronously in a nested callbacks
 d3.tsv("barData.tsv", function (barData) {
-d3.tsv("trendData.tsv", function (trendData) {
+d3.tsv("rentTrends.tsv", function (rentTrends) {
+d3.tsv("housingTrends.tsv", function (housingTrends) {
 d3.json("cities.json", function(cities) {
 d3.json("alberta.json", function(alberta) {
-    
-//FORMAT Trend Data
-var format = d3.time.format("%y-%b");
 
-for (var i = 0; i < trendData.length; i++) {
-    trendData[i].Month = format.parse(trendData[i].Month);
-}
-
-var optimumValues = {},
-    selectedTrendCharts = [
-    Object.keys(trendData[0])[2]],
+var trendDatasets = [
+        rentTrends,
+        housingTrends
+    ],
+    trendData = trendDatasets[0],
+    optimumValues = {},
+    selectedTrendChart = Object.keys(trendData[0])[2],
     selectedBarCharts = [
     Object.keys(barData[0])[1],
     Object.keys(barData[0])[2],
@@ -71,7 +69,11 @@ var optimumValues = {},
     selectedBarChart = selectedBarCharts[0]; //the bar chart currently selected in the drop down menu
 var numBarCharts = selectedBarCharts.length,
     numCities = barData.length,
-    trendChartTypes = Object.keys(trendData[0]).slice(2, Object.keys(trendData[0]).length),
+    trendChartTypes = function() {
+        var types = [];
+        for (var i = 0; i < trendDatasets.length; i++)
+            types.push(Object.keys(trendDatasets[i][0])[2])
+        return types;},
     barChartTypes = 
     Object.keys(barData[0]).slice(1, Object.keys(barData[0]).length);
     barChartWidth = chartWidth/numBarCharts;
@@ -84,6 +86,16 @@ var barXAxes = [],
     trendYaxis;
 var chartData;
     
+//FORMAT Trend Data
+var format = d3.time.format("%y-%b");
+
+for (var j = 0; j < trendDatasets.length; j++) {
+    var data = trendDatasets[j];
+    for (var i = 0; i < data.length; i++) {
+        data[i].Month = format.parse(data[i].Month);
+    }
+}
+  
 for (var i = 0; i < barChartTypes.length; i++) {
     var chart = barChartTypes[i];
     var ic = selectedBarCharts
@@ -92,8 +104,6 @@ for (var i = 0; i < barChartTypes.length; i++) {
         selectableBarCharts.push(chart)
     }
 }
-
-var trendValue = "Rental Rate";
 
 var initialized = false;
 var addBarButton;
@@ -115,11 +125,19 @@ var projection = d3.geo.mercator()
         .translate([width * 8 / 2, height * 5 / 2]);
     
 //Reference this Array to determine which cities to draw in the charts
-var selectedCities = ["Edmonton", "Calgary"],
+var selectedCities = [barData[0].City, barData[1].City],
     cityMarkers = {};
 
-//Initialize Tool Tip
-var tip = d3.tip()
+//Initialize Tool Tips
+var infoTip = d3.tip()
+    .direction('n') 
+    .offset([-10,-200])
+    .attr('class', 'd3-tip')
+    .html(function(d) {
+        return "<strong>Live Alberta</strong><br>Compare cities in Alberta to find the one best suited to you<br><strong>Hand Crafted by</strong><br>Karo Castro-Wunsch<br>David Buss<br><strong>Data Curated from</strong><br>http://www.currentresults.com/Weather/Canada/Alberta/sunshine-annual-average.php<br>http://www.city-data.com<br>http://www.albertacanada.com/SP-CS_2010-alberta-spatial-price-survey.pdf";
+        });
+        
+var cityTip = d3.tip()
     .direction(function(d) {
         if (Object.keys(d).length == 3) return 'e';
         else return 'w';
@@ -173,8 +191,9 @@ var tip = d3.tip()
         return content;
     });
 
-msvg.call(tip);
-svg.call(tip); 
+msvg.call(cityTip);
+svg.call(cityTip); 
+svg.call(infoTip);
     
 //Draw All Elements (Order matters)
 drawMap();
@@ -190,7 +209,7 @@ function mapCity(cityName, c) {
 }
     
 function drawIcons() {
-    var backgroundColor = "#444";
+    var backgroundColor = "#eee";
     
     iconG = svg.append("g");
     
@@ -209,6 +228,7 @@ function drawIcons() {
             .attr("x", width - iconInset - 2)
             .attr("y", iconYInset + 8)
             .attr('class', 'icon')
+            .attr("fill", backgroundColor)
             .text(function (d) { return d; });
                  
     var circle = iconG.append("circle")
@@ -220,9 +240,11 @@ function drawIcons() {
             .attr("fill", 'rgba(255,255,255, 0)')
             .on("click", function() {})
             .on("mouseover", function(d) {
+                infoTip.show();
                 d3.select(this).attr("stroke", '#454545'); 
                 iconG.selectAll("text").attr('class', 'iconHover'); })
             .on("mouseout", function(d) {
+                infoTip.hide();
                 d3.select(this).attr("stroke", backgroundColor); 
                 iconG.selectAll("text").attr('class', 'icon'); });
     
@@ -230,8 +252,6 @@ function drawIcons() {
 
 function drawChartMenus() {
     
-    if (true) {
-        initialized = true;
         d3.select("#barMenu1").selectAll("select").remove();
         var barMenu1 = d3.select("#barMenu1")
             .style("top", menuYoffset * 1.54 + "px")
@@ -268,16 +288,18 @@ function drawChartMenus() {
                 selectedBarChart = selectableBarCharts[0];
                 return d === selectableBarCharts[0]; });
     
-    d3.select("#trendMenu1").selectAll("select").remove();
-    var trendMenu1 = d3.select("#trendMenu1")
+    if (!initialized) {
+        initialized = true;
+        d3.select("#trendMenu1").selectAll("select").remove();
+        var trendMenu1 = d3.select("#trendMenu1")
             .style("top", menuYoffset * 1.36 + "px")
             .style("left", menuXoffset * 1.69 + "px")
             .append("select")
             .on("change", function() {
                 //SET new Value
-                selectedTrendCharts[0] = 
+                selectedTrendChart = 
                     this.options[this.selectedIndex].__data__;
-
+                console.log(selectedTrendChart);
                 //Draw Bar Charts
                 UpdateCharts();
             })
@@ -291,7 +313,7 @@ function drawChartMenus() {
             .text(function (d) {
                 return d;
             })
-            .property("selected", function(d){ return d === selectedTrendCharts[0]; });
+            .property("selected", function(d){ return d === selectedTrendChart; });
     }
     
     if (trendTitle != null)
@@ -335,10 +357,8 @@ function drawChartMenus() {
                 if (selectableBarCharts.length == 0)
                     return
                 selectedBarCharts.push(selectedBarChart);
-                UpdateCharts();
-                console.log("click"); })
+                UpdateCharts(); })
             .on("mouseover", function(d) {
-                console.log("hover");
                  d3.select(this).attr('fill', '#000'); })
             .on("mouseout", function(d) {
                  d3.select(this).attr('fill', '#999'); });
@@ -436,12 +456,12 @@ function drawMap() {
        .style("opacity", 0.75)
         .on("mouseover", function(d) {
 
-            tip.show(d);
+            cityTip.show(d);
             d3.select(this).attr("r", 10);
             d3.select(this).style("opacity", 0.95);
             })
         .on("mouseout", function(d) {
-            tip.hide(d);
+            cityTip.hide(d);
             d3.select(this).attr("r", 6);
             d3.select(this).style("opacity", 0.75);
         })
@@ -571,8 +591,8 @@ function drawBarCharts() {
         //COLOR by City
         setChartColors(chart);
         xAxis.title = "";
-        bars.addEventHandler("mouseover", tip.show);
-        bars.addEventHandler("mouseout", tip.hide);
+        bars.addEventHandler("mouseover", cityTip.show);
+        bars.addEventHandler("mouseout", cityTip.hide);
         chart.draw(300);
         yAxis.titleShape.style("font-size","18"); 
         xAxis.shapes.selectAll("text").remove(); 
@@ -622,9 +642,6 @@ function drawSlider(chartXOffset, yAxis, chartName, barChartWidth) {
         .attr("transform", "translate(" + chartXOffset + "," + 0 + ")")
         .attr("r", 6);
     
-    
-        
-    
     var extent = [0,0];
     if (optimumValues.hasOwnProperty(chartName))
         extent = [yAxis._max - optimumValues[chartName],
@@ -655,20 +672,32 @@ function drawSlider(chartXOffset, yAxis, chartName, barChartWidth) {
     
 //TREND CHART
 function drawTrendChart() {
+    //SET trend data to selected chart
+    for (var i = 0; i < trendDatasets.length; i++) {
+        if (Object.keys(trendDatasets[i][0])[2] ==
+            selectedTrendChart) {
+            trendData = trendDatasets[i];
+        }
+    }
+    
+    
+          
     chartData = dimple.filterData(trendData, "City", selectedCities);
+    
+    console.log(chartData);
     trendChart = new dimple.chart(svg, chartData);
     trendChart.setBounds(60, height * 0.36, chartWidth * 1.06, 305);
     var x = trendChart.addTimeAxis("x", "Month");
     x.tickFormat = "%y-%b";
     x.addOrderRule("Date");
-    var yAxis = trendChart.addMeasureAxis("y", trendValue);
+    var yAxis = trendChart.addMeasureAxis("y", selectedTrendChart);
     var trends = trendChart.addSeries("City", dimple.plot.line);
     trends.addEventHandler("click", function (d) {
         toggleCity(d.seriesValue[0]); });
     //COLOR by City
     setChartColors(trendChart);
-    trends.addEventHandler("mouseover", tip.show);
-    trends.addEventHandler("mouseout", tip.hide);
+    trends.addEventHandler("mouseover", cityTip.show);
+    trends.addEventHandler("mouseout", cityTip.hide);
     trendChart.draw(300);
     yAxis.titleShape.style("font-size","18");
     trendYaxis = yAxis;
@@ -735,7 +764,6 @@ function toggleCity(cityName) {
         barCharts[i].draw(300);
         barXAxes[i].shapes.selectAll("text").remove(); 
         barYAxes[i].titleShape.style("font-size","18");
-        
     }
     
     trendChart.data = 
@@ -802,6 +830,7 @@ function setChartColors(chart) {
 });
 });
 });   
+});
 });
 
 </script>
