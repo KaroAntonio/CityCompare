@@ -7,6 +7,7 @@
 <script src="http://dimplejs.org/dist/dimple.v2.1.2.min.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
 <script src="d3.slider.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <link rel="stylesheet" type="text/css" href="style.css">
 <link rel="stylesheet" type="text/css" href="d3.slider.css">
 <title>Live Alberta</title>
@@ -55,7 +56,8 @@ d3.tsv("housingTrends.tsv", function (housingTrends) {
 d3.json("cities.json", function(cities) {
 d3.json("alberta.json", function(alberta) {
 
-var trendDatasets = [
+var handles = [],
+    trendDatasets = [
         rentTrends,
         housingTrends
     ],
@@ -129,12 +131,29 @@ var selectedCities = [barData[0].City, barData[1].City],
     cityMarkers = {};
 
 //Initialize Tool Tips
+var tipsEnabled = false;
 var infoTip = d3.tip()
     .direction('n') 
-    .offset([-10,-200])
+    .offset([-10,-260])
     .attr('class', 'd3-tip')
     .html(function(d) {
-        return "<strong>Live Alberta</strong><br>Compare cities in Alberta to find the one best suited to you<br><strong>Hand Crafted by</strong><br>Karo Castro-Wunsch<br>David Buss<br><strong>Data Curated from</strong><br>http://www.currentresults.com/Weather/Canada/Alberta/sunshine-annual-average.php<br>http://www.city-data.com<br>http://www.albertacanada.com/SP-CS_2010-alberta-spatial-price-survey.pdf";
+        return "<strong>Live Alberta</strong><br>Compare cities in Alberta to find the one best suited to YOU<br><strong>Hand Crafted by</strong><br>Karo Castro-Wunsch<br>David Buss<br><strong>Data Curated from</strong><br>http://www.currentresults.com/Weather/Canada/Alberta/sunshine-annual-average.php<br>http://www.city-data.com<br>http://www.albertacanada.com/SP-CS_2010-alberta-spatial-price-survey.pdf";
+        });
+
+var rankTip = d3.tip()
+    .direction('n') 
+    .offset([-10,30])
+    .attr('class', 'd3-tip')
+    .html(function(d) {
+        return "Cities are Ranked According to Optimality Prefences:<br>Set Preferences by adjusting the optimality pointer <br>on the bar chart Y axes.";
+        });
+    
+var pointerTip = d3.tip()
+    .direction('e') 
+    .offset([10,0])
+    .attr('class', 'd3-tip')
+    .html(function(d) {
+        return "Optimality Pointer";
         });
         
 var cityTip = d3.tip()
@@ -194,6 +213,8 @@ var cityTip = d3.tip()
 msvg.call(cityTip);
 svg.call(cityTip); 
 svg.call(infoTip);
+msvg.call(rankTip);
+svg.call(pointerTip);
     
 //Draw All Elements (Order matters)
 drawMap();
@@ -299,7 +320,6 @@ function drawChartMenus() {
                 //SET new Value
                 selectedTrendChart = 
                     this.options[this.selectedIndex].__data__;
-                console.log(selectedTrendChart);
                 //Draw Bar Charts
                 UpdateCharts();
             })
@@ -501,7 +521,14 @@ function drawLegend() {
             .attr("y", height * 0.04)
             .attr("fill", "#fff")
             .attr('class', 'legendTitle')
-            .text(function (d) { return d; });
+            .text(function (d) { return d; })
+            .on("mouseover", function() {
+                tipsEnabled = false;
+                //for (var i = 0; i < handles.length; i++)
+                    //handles[i].trigger("mouseover");
+                    //console.log(handles[i]);
+                rankTip.show();})
+            .on("mouseout",rankTip.hide);
     
     if (legendCircles != null)
         legendCircles.remove();
@@ -573,6 +600,7 @@ function drawLegend() {
 
 //BAR CHARTS
 function drawBarCharts() {
+    handles = [];
     barCharts = [];
     var buffer = 60;
     barChartWidth = chartWidth*1.66/selectedBarCharts.length - buffer;
@@ -612,7 +640,6 @@ function drawBarCharts() {
 }
     
 function drawSlider(chartXOffset, yAxis, chartName, barChartWidth) {
-    
     var scale = d3.scale.linear()
             .domain([yAxis._min,yAxis._max])
             .range([30, barChartHeight + 30])
@@ -637,11 +664,17 @@ function drawSlider(chartXOffset, yAxis, chartName, barChartWidth) {
         .attr("width", barChartWidth)
         .attr("height", 2);
     
-    var handle = slider.append("circle")
+    var handle = slider.append("polygon")
         .attr("class", "handle")
         .attr("transform", "translate(" + chartXOffset + "," + 0 + ")")
-        .attr("r", 6);
+        .attr("points", "-10,-5 0,0 -10,5" )
+        .on("mouseover", function() {
+        if(tipsEnabled) pointerTip.show();})
+        .on("mouseout", function() {
+        if(tipsEnabled) pointerTip.hide();});
     
+    handles.push(handle);
+
     var extent = [0,0];
     if (optimumValues.hasOwnProperty(chartName))
         extent = [yAxis._max - optimumValues[chartName],
@@ -654,9 +687,10 @@ function drawSlider(chartXOffset, yAxis, chartName, barChartWidth) {
         .call(brush.event);
     
     function brushed() {
+        handle.on(true, pointerTip.show);
         
         var value = brush.extent()[1];
-
+        
         if (d3.event.sourceEvent) { // not a programmatic event
             value = (scale.invert(d3.mouse(this)[1]));
             brush.extent([value, value]);
@@ -664,7 +698,7 @@ function drawSlider(chartXOffset, yAxis, chartName, barChartWidth) {
         optimumValues[chartName] = yAxis._max - value;
         
         drawLegend();
-        handle.attr("cy", scale(value));
+        handle.attr("transform", "translate("+chartXOffset+"," + scale(value) +")")
         guide.attr("y", scale(value));
       
     }
@@ -680,11 +714,8 @@ function drawTrendChart() {
         }
     }
     
-    
-          
     chartData = dimple.filterData(trendData, "City", selectedCities);
     
-    console.log(chartData);
     trendChart = new dimple.chart(svg, chartData);
     trendChart.setBounds(60, height * 0.36, chartWidth * 1.06, 305);
     var x = trendChart.addTimeAxis("x", "Month");
@@ -826,6 +857,15 @@ function setChartColors(chart) {
         chart.assignColor(cityName, cityColor(cityName), cityColor(cityName), 0.7);
     }
 }
+    
+jQuery.fn.d3Click = function () {
+  this.each(function (i, e) {
+    var evt = document.createEvent("MouseEvents");
+    evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+
+    e.dispatchEvent(evt);
+  });
+};
 
 });
 });
