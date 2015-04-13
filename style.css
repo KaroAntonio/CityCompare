@@ -10,12 +10,13 @@ svg { position:fixed; top:1; bottom:0; left:0; right:1; z-index: 1; }
     color: #fff;
     pointer-events: none;
     text-align: center;
-    text-image: url("plainsky.jpg");
     background-image: url("plainsky.jpg");
     background-size:auto auto;
     background-position:center 1030px;
     -webkit-font-smoothing: antialiased;
 }
+
+
 
 .legend {
     margin: 0px;
