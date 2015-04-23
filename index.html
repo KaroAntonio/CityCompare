@@ -32,16 +32,17 @@ console.log(wwidth + " " + wheight)
 var width = 1400,
     height = 838,
     chartWidth = width * 0.7,
-    legendXOffset = width * 0.09,
+    legendXOffset = width * 0.06,
     legendYOffset = height * 0.1,
     menuXoffset = width * 0.7,
-    menuYoffset = height * 0.5,
+    menuYoffset = height * 0.45,
     chartBaseXOffset = width * 0.28,
-    barChartYOffset = height * 0.12,
-    trendChartYOffset = height * 0.525,
+    barChartYOffset = height * 0.08,
+    trendChartYOffset = height * 0.515,
+    trendChartYOffset = height * 0.48,
     barChartHeight = height * 0.355,
     iconInset = width * 0.05,
-    iconYInset = height * 0.91,
+    iconYInset = height * 0.89,
     iconSize = 12;
 
 var msvg = d3.select("#container").append("svg")
@@ -126,7 +127,7 @@ var legendBox,
     
 var projection = d3.geo.mercator()
         .scale(width * height * 0.001619)
-        .translate([width * 2.87, height * 3.1]);
+        .translate([width * 2.87, height * 3.08]);
     
 //Reference this Array to determine which cities to draw in the charts
 var selectedCities = [barData[0].City, barData[1].City],
@@ -218,12 +219,7 @@ svg.call(rankTip);
 svg.call(pointerTip);
     
 //Draw All Elements (Order matters)
-drawMap();
-drawIcons();
-drawBarCharts();
-drawTrendChart();
-drawChartMenus();
-drawLegend();
+UpdateCharts();
     
 window.onresize = function(event) {
     /*
@@ -817,12 +813,12 @@ function toggleCity(cityName) {
     
 function UpdateCharts() {
     svg.selectAll("*").remove();
-    drawTrendChart();
-    drawBarCharts();
-    drawLegend();
-    drawChartMenus();
+    drawMap();
     drawIcons();
-     
+    drawBarCharts();
+    drawTrendChart();
+    drawChartMenus();
+    drawLegend();
 }
     
 function filterBarData(yValue) {
