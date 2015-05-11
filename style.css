@@ -1,7 +1,6 @@
 html, body { margin:0; padding:0; overflow: scroll; width: 100%}
-/*
-svg { position:fixed; top:1; bottom:0; left:0; right:1; z-index: 1; }
-*/
+
+svg { position:relative; top:5%; bottom:0; left:0; right:1; z-index: 1; }
 
 .title {
     position: fixed;
@@ -42,6 +41,12 @@ svg { position:fixed; top:1; bottom:0; left:0; right:1; z-index: 1; }
     color: #fff;
     text-align: left;
     z-index: 10;
+}
+
+#twitterFeed {
+    position:absolute;
+    z-index: 10;
+    width: 30px;
 }
 
 .menuTitle {

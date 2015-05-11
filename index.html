@@ -15,11 +15,14 @@
 
 <body>
 <div class="title">Live Alberta</div>
-
+<div id="twitterFeed"><a class="twitter-timeline" href="https://twitter.com/hashtag/YEG" data-widget-id="597846961694183424">Tweets</a></div>
 <div id="barMenu1"></div>
 <div id="trendMenu1"></div> 
 <div id="charts">
 <script>
+    
+
+    
 //SET Curser
 document.getElementsByTagName("body")[0].style.cursor = "default";
     
@@ -123,7 +126,8 @@ var legendBox,
     barList,
     listButtons,
     barChartTitles,
-    iconG;
+    iconG,
+    twitterFeed;
     
 var projection = d3.geo.mercator()
         .scale(width * height * 0.001619)
@@ -219,7 +223,7 @@ svg.call(rankTip);
 svg.call(pointerTip);
     
 //Draw All Elements (Order matters)
-UpdateCharts();
+Update();
     
 window.onresize = function(event) {
     /*
@@ -319,7 +323,11 @@ function drawChartMenus() {
     
     if (!initialized) {
         initialized = true;
-        d3.select("#trendMenu1").selectAll("select").remove();
+        
+        d3.select("#trendMenu1")
+            .selectAll("select")
+            .remove();
+        /*
         var trendMenu1 = d3.select("#trendMenu1")
             .style("top", menuYoffset * 1.19 + "px")
             .style("left", menuXoffset * 1.12 + "px")
@@ -329,7 +337,7 @@ function drawChartMenus() {
                 selectedTrendChart = 
                     this.options[this.selectedIndex].__data__;
                 //Draw Bar Charts
-                UpdateCharts();
+                Update();
             })
             .selectAll("option")
             .data(trendChartTypes)
@@ -341,9 +349,9 @@ function drawChartMenus() {
             .text(function (d) {
                 return d;
             })
-            .property("selected", function(d){ return d === selectedTrendChart; });
+            .property("selected", function(d){ return d === selectedTrendChart; }); */
     }
-    
+    /*
     if (trendTitle != null)
         trendTitle.remove();
     trendTitle = svg.append("g")
@@ -354,8 +362,8 @@ function drawChartMenus() {
                 .attr("x", menuXoffset * 1.1)
                 .attr("y", menuYoffset * 1.1)
                 .attr('class', 'menuTitle')
-                .text(function (d) { return d; });
-    
+                .text(function (d) { return d; }); 
+    */
     if (barTitle != null)
         barTitle.remove();
     barTitle = svg.append("g")
@@ -385,7 +393,7 @@ function drawChartMenus() {
                 if (selectableBarCharts.length == 0)
                     return
                 selectedBarCharts.push(selectedBarChart);
-                UpdateCharts(); })
+                Update(); })
             .on("mouseover", function(d) {
                  d3.select(this).attr('fill', '#000'); })
             .on("mouseout", function(d) {
@@ -410,7 +418,7 @@ function drawChartMenus() {
                 .on("click", function(d) {
                         selectedBarCharts.splice(
                             selectedBarCharts.indexOf(d),1);
-                        UpdateCharts();
+                        Update();
                             })
                 .on("mouseover", function(d) {
                      d3.select(this).attr('fill', '#555'); })
@@ -437,7 +445,7 @@ function drawChartMenus() {
                 .on("click", function(d) { 
                     selectedBarCharts.splice(
                             selectedBarCharts.indexOf(d),1);
-                    UpdateCharts();})
+                    Update();})
                 .on("mouseover", function(d) {
                      d3.select(this).attr('fill', '#000'); })
                 .on("mouseout", function(d) {
@@ -741,6 +749,34 @@ function drawTrendChart() {
     yAxis.titleShape.style("font-size","18");
     trendYaxis = yAxis;
 }
+    
+//TWITTER FEED
+function drawTwitterFeed() {
+    
+    //Initializes twitter widget
+    //could updated to include # for all relevant cities
+    !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+    
+    d3.select("#twitterFeed")
+            .style("width", chartWidth*0.5 + "px")
+            .style("height", 200 + "px")
+            .style("top", chartBaseXOffset * 1.1 + "px")
+            .style("left", trendChartYOffset + "px");
+    /*
+    if (twitterFeed != null)
+        twitterFeed.remove();
+    
+    //This appends an html div into the svg, nested in on top, all html can go into the html tag
+    twitterFeed = svg.append("foreignObject")
+        .attr("width", 480)
+        .attr("height", 500)
+        .attr("x", chartBaseXOffset + 60)
+        .attr("y", trendChartYOffset)
+        .append("xhtml:div")
+        .attr('class', 'twitterFeed')
+        .html("<a class=&quottwitter-timeline&quot href=&quothttps://twitter.com/search?q=%23Edmonton&quot data-widget-id=&quot597846961694183424&quot>Tweets about #Edmonton</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+&quot://platform.twitter.com/widgets.js&quot;fjs.parentNode.insertBefore(js,fjs);}}(document,&quotscript&quot,&quottwitter-wjs&quot);&lt/script>");*/
+}
+    
 
 function rankCities() {
     //Rank cities by their aggregate optimality across bar charts
@@ -811,12 +847,13 @@ function toggleCity(cityName) {
     trendYaxis.titleShape.style("font-size","18");
 }
     
-function UpdateCharts() {
+function Update() {
     svg.selectAll("*").remove();
     drawMap();
     drawIcons();
     drawBarCharts();
-    drawTrendChart();
+    //drawTrendChart();
+    drawTwitterFeed();
     drawChartMenus();
     drawLegend();
 }
