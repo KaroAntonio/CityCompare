@@ -110,6 +110,7 @@ for (var i = 0; i < barChartTypes.length; i++) {
 
 var initialized = false;
 var menuVisible = false;
+var showInitialTips = true;
 var addBarButton;
 var legendBox,
     legendTitle,
@@ -138,18 +139,34 @@ var selectedCities = [barData[0].City, barData[1].City],
 var tipsEnabled = false;
 var infoTip = d3.tip()
     .direction('w') 
-    .offset([0 ,-10])
+    .offset([50 ,-10])
     .attr('class', 'd3-tip')
     .html(function(d) {
         return "<strong>Live Alberta</strong><br>Compare cities in Alberta to find the one best suited to YOU<br><strong>Hand Crafted by</strong><br>Karo Castro-Wunsch<br>David Buss<br><strong>Data Curated from</strong><br>http://www.currentresults.com/Weather/Canada/Alberta/sunshine-annual-average.php<br>http://www.city-data.com<br>http://www.albertacanada.com/SP-CS_2010-alberta-spatial-price-survey.pdf";
         });
-
-var rankTip = d3.tip()
-    .direction('n') 
-    .offset([-10,30])
+    
+var plusIconTip = d3.tip()
+    .direction('w') 
+    .offset([0, -10])
     .attr('class', 'd3-tip')
     .html(function(d) {
-        return "<u>Cities are Ranked According to Optimality Preferences</u><br>Set Preferences by adjusting the optimality pointer <br>on the bar chart Y axes.";
+        return "<b>Click to Add and Remove Bar Charts</b>";
+        });
+    
+var infoIconTip = d3.tip()
+    .direction('w') 
+    .offset([0, -10])
+    .attr('class', 'd3-tip')
+    .html(function(d) {
+        return "<b>Click to see Tips</b>";
+        });
+
+var rankTip = d3.tip()
+    .direction('e') 
+    .offset([0, 10])
+    .attr('class', 'd3-tip')
+    .html(function(d) {
+        return "<b>Cities are Ranked According to Optimality Preferences</b><br>Set Preferences by adjusting the optimality pointer <br>on the bar chart Y axes.";
         });
     
 var pointerTip = d3.tip()
@@ -196,18 +213,20 @@ var cityTip = d3.tip()
         }
         
         var content = "<span><strong>" + city + "</strong>";
-        for (var i = 1; 
-             i < Object.keys(barData[0]).length; 
-             i++) {
-            var key = Object.keys(barData[0])[i];
-            var value = cityData[Object.keys(barData[0])[i]]
-            content += "<br>" + key + ": " + value;
-            /*
-            if ((selectedCities.indexOf(city) == -1) ||
-               (value != "") &&
-               (selectedBarCharts.indexOf(key) == -1))
+        if (!isBar) {
+            for (var i = 1; 
+                 i < Object.keys(barData[0]).length; 
+                 i++) {
+                var key = Object.keys(barData[0])[i];
+                var value = cityData[Object.keys(barData[0])[i]]
                 content += "<br>" + key + ": " + value;
-                */
+                /*
+                if ((selectedCities.indexOf(city) == -1) ||
+                   (value != "") &&
+                   (selectedBarCharts.indexOf(key) == -1))
+                    content += "<br>" + key + ": " + value;
+                    */
+            }
         }
         content += "<span>";
         
@@ -228,11 +247,18 @@ var barMenuTip = d3.tip()
 svg.call(barMenuTip);
 svg.call(cityTip); 
 svg.call(infoTip);
+svg.call(infoIconTip);
+svg.call(plusIconTip)
 svg.call(rankTip);
 svg.call(pointerTip);
+document.onclick = function() {
+    hideInfoTips();
+}
 
 //Draw All Elements (Order matters)
 Update();
+showInfoTips();
+infoIconTip.show(infoG.node())
     
 window.onresize = function(event) {
     /*
@@ -281,13 +307,16 @@ function drawIcons() {
             .attr("stroke-width", 2)
             .attr("fill", 'rgba(255,255,255, 0)')
             .on("click", function() {
+                
                 })
             .on("mouseover", function(d) {
+                showInfoTips();
                 infoTip.show();
                 d3.select(this).attr("stroke", '#454545'); 
                 infoG.selectAll("text").attr('class', 'iconHover'); })
             .on("mouseout", function(d) {
                 infoTip.hide();
+                hideInfoTips();
                 d3.select(this).attr("stroke", backgroundColor); 
                 infoG.selectAll("text").attr('class', 'icon'); });
     
@@ -581,14 +610,11 @@ function drawLegend() {
             .attr("y", legendYOffset * 1.3)
             .attr("fill", "#fff")
             .attr('class', 'legendTitle')
-            .text(function (d) { return d; })
+            .text(function (d) {
+                return d; })
             .on("mouseover", function() {
-                tipsEnabled = false;
-                //for (var i = 0; i < handles.length; i++)
-                    //handles[i].trigger("mouseover");
-                    //console.log(handles[i]);
                 rankTip.show();})
-            .on("mouseout",rankTip.hide);
+            .on("mouseout", rankTip.hide);
     
     if (legendCircles != null)
         legendCircles.remove();
@@ -889,6 +915,17 @@ function toggleCity(cityName) {
             dimple.filterData(trendData, "City", selectedCities);
     trendChart.draw(300);
     trendYaxis.titleShape.style("font-size","18");
+}
+    
+function showInfoTips(){
+    rankTip.show(legendTitle.node())
+    plusIconTip.show(menuG.node())
+}
+
+function hideInfoTips(){
+    rankTip.hide();
+    infoIconTip.hide();
+    plusIconTip.hide();
 }
     
 function Update() {
