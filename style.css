@@ -49,6 +49,13 @@ svg { position:relative; margin-top:20px; z-index: 1; }
     width: 30px;
 }
 
+#images {
+    position:absolute;
+    z-index: 10;
+    width: 30px;
+    overflow: scroll;
+}
+
 .menuTitle {
     margin: 0px;
     font: 22px sans-serif;

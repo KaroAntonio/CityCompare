@@ -14,11 +14,11 @@
 </head>
 
 <body>
-<script> var edmontonID = "597846961694183424", calgaryID = "605893721658302464"; </script>
+<script> var edmontonID = "597846961694183424", woodbuffaloID = "605893721658302464"; </script>
 <div class="title">Live Alberta</div>
 <!--<div id="twitterFeed"><a class="twitter-timeline" href="https://twitter.com/hashtag/YEG" data-widget-id="597846961694183424">Tweets</a></div>-->
-<div id="twitterFeed"><a class="twitter-timeline" href="https://twitter.com/hashtag/calgary" id="twitter">#calgary Tweets</a></div>
-<div id="images">Loading Images.......</div>
+<div id="twitterFeed"><a class="twitter-timeline"  id="twitter">Tweets</a></div>
+<div id="images"></div>
 <!--<div id="barMenu1"></div>-->
     <div id="barMenu2"></div>
 <div id="trendMenu1"></div> 
@@ -824,13 +824,13 @@ function drawTrendChart() {
 }
     
 //TWITTER FEED
-function drawTwitterFeed() {
+function drawTwitterFeed(cityID) {
     
     //Initializes twitter widget
     //could updated to include # for all relevant cities
     !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
     
-    d3.select("#twitter").attr("data-widget-id",calgaryID);
+    d3.select("#twitter").attr("data-widget-id",cityID);
     d3.select("#twitterFeed")
             .style("width", chartWidth*0.5 + "px")
             .style("height", 200 + "px")
@@ -851,16 +851,25 @@ function drawTwitterFeed() {
         .html("<a class=&quottwitter-timeline&quot href=&quothttps://twitter.com/search?q=%23Edmonton&quot data-widget-id=&quot597846961694183424&quot>Tweets about #Edmonton</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+&quot://platform.twitter.com/widgets.js&quot;fjs.parentNode.insertBefore(js,fjs);}}(document,&quotscript&quot,&quottwitter-wjs&quot);&lt/script>");*/
 }
     
-function drawImages() {
+function drawImages(cityName) {
+    for( y = 0; y <24;y+=4) {
     $.ajax({
-					url: "http://www.ajax.googleapis.com/ajax/services/search/images?v=1.0&q=dog",
+					url: "http://www.ajax.googleapis.com/ajax/services/search/images?v=1.0&q=" + cityName + "&start=" + y,
 					type: "GET",
 					dataType: "jsonp",
 					success: function (data) {	
-						console.log(data);
+						  for (x = 0; x < data.responseData.results.length;x++) {
+                                $("#images").append('<img src="' + data.responseData.results[x].tbUrl + '" style= "width: 238px; height: 200px;" >');
+                        }     
+                        
 					}	
 				});
-    d3.select("#images");
+    } 
+    d3.select("#images")
+        .style("width", chartWidth*0.5 + "px")
+        .style("height", 600 + "px")
+        .style("top", chartBaseXOffset * 1.1  + "px")
+        .style("left", trendChartYOffset + 500 + "px");
      
 }
     
@@ -950,8 +959,8 @@ function Update() {
     drawIcons();
     drawBarCharts();
     //drawTrendChart();
-    drawTwitterFeed();
-    drawImages();
+    drawTwitterFeed(edmontonID);
+    drawImages("edmonton");
     drawChartMenus();
     drawLegend();
 }
