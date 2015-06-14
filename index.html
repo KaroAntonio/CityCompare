@@ -14,6 +14,7 @@
 </head>
 
 <body>
+<!--<div id="twitterFeed"><a class="twitter-timeline" href="https://twitter.com/search?q=%23YEG%20OR%20%23Calgary" data-widget-id="597846961694183424">Tweets about #YEG OR #Calgary</a></div> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>-->
 <script> var edmontonID = "597846961694183424", woodbuffaloID = "605893721658302464"; </script>
 <div class="title">Live Alberta</div>
 <div id="twitterFeed"><a class="twitter-timeline"  id="twitter">Tweets</a></div>
@@ -48,8 +49,7 @@ var width = 1400,
     iconSize = 12;
 
 //IMGS are on a seperate svg element
-var svg = dimple.newSvg("#charts", width, height); 
-var imgs = dimple.newSvg("#div", width, height); 
+var svg = dimple.newSvg("#charts", width, height);  
 d3.slider();
 //Load All data sets asynchronously in a nested callbacks
 d3.tsv("barData.tsv", function (barData) {
@@ -850,17 +850,17 @@ function drawTwitterFeed(cityID) {
 }
     
 function drawImages() {
-    for( y = 0; y <24;y+=4) {
-        cityName = selectedCities[Math.floor(Math.random() * selectedCities.length)]
+    for( y = 0; y <12;y+=1) {
+        var cityName = selectedCities[Math.floor(Math.random() * selectedCities.length)]
     $.ajax({
 					url: "http://www.ajax.googleapis.com/ajax/services/search/images?v=1.0&q=" + cityName + " city&start=" + y + "&imgsz=medium",
 					type: "GET",
 					dataType: "jsonp",
 					success: function (data) {
-                        
 						  for (x = 0; x < data.responseData.results.length;x++) {
-                              
+                              console.log(data)
                               var url = data.responseData.results[x].url
+                              //$("#images").prepend('<div class="imageTitle"> '+cityName+'</div>');
                               $("#images").prepend('<img src="' + url + '" style= "width: 238px; height: 238px;" >');
                               
                               //TEST Image and display when verified

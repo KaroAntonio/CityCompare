@@ -56,6 +56,10 @@ svg { position:relative; margin-top:20px; z-index: 1; }
     overflow: scroll;
 }
 
+.imageTitle {
+    font: 20px sans-serif;
+}
+
 .menuTitle {
     margin: 0px;
     font: 22px sans-serif;
