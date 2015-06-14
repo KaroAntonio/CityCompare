@@ -16,7 +16,6 @@
 <body>
 <script> var edmontonID = "597846961694183424", woodbuffaloID = "605893721658302464"; </script>
 <div class="title">Live Alberta</div>
-<!--<div id="twitterFeed"><a class="twitter-timeline" href="https://twitter.com/hashtag/YEG" data-widget-id="597846961694183424">Tweets</a></div>-->
 <div id="twitterFeed"><a class="twitter-timeline"  id="twitter">Tweets</a></div>
 <div id="images"></div>
 <!--<div id="barMenu1"></div>-->
@@ -32,8 +31,6 @@ var w = window,
     wwidth = w.innerWidth || e.clientWidth || g.clientWidth,
     wheight = w.innerHeight|| e.clientHeight|| g.clientHeight;
     
-console.log(wwidth + " " + wheight)    
-
 var width = 1400,
     height = 838,
     chartWidth = width * 0.68,
@@ -50,8 +47,9 @@ var width = 1400,
     iconYInset = 140,
     iconSize = 12;
 
-//Charts are on a seperate svg element
+//IMGS are on a seperate svg element
 var svg = dimple.newSvg("#charts", width, height); 
+var imgs = dimple.newSvg("#div", width, height); 
 d3.slider();
 //Load All data sets asynchronously in a nested callbacks
 d3.tsv("barData.tsv", function (barData) {
@@ -851,15 +849,31 @@ function drawTwitterFeed(cityID) {
         .html("<a class=&quottwitter-timeline&quot href=&quothttps://twitter.com/search?q=%23Edmonton&quot data-widget-id=&quot597846961694183424&quot>Tweets about #Edmonton</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+&quot://platform.twitter.com/widgets.js&quot;fjs.parentNode.insertBefore(js,fjs);}}(document,&quotscript&quot,&quottwitter-wjs&quot);&lt/script>");*/
 }
     
-function drawImages(cityName) {
+function drawImages() {
     for( y = 0; y <24;y+=4) {
+        cityName = selectedCities[Math.floor(Math.random() * selectedCities.length)]
     $.ajax({
-					url: "http://www.ajax.googleapis.com/ajax/services/search/images?v=1.0&q=" + cityName + "&start=" + y,
+					url: "http://www.ajax.googleapis.com/ajax/services/search/images?v=1.0&q=" + cityName + " city&start=" + y + "&imgsz=medium",
 					type: "GET",
 					dataType: "jsonp",
-					success: function (data) {	
+					success: function (data) {
+                        
 						  for (x = 0; x < data.responseData.results.length;x++) {
-                                $("#images").append('<img src="' + data.responseData.results[x].tbUrl + '" style= "width: 238px; height: 200px;" >');
+                              
+                              var url = data.responseData.results[x].url
+                              $("#images").prepend('<img src="' + url + '" style= "width: 238px; height: 238px;" >');
+                              
+                              //TEST Image and display when verified
+                              /*
+                              var img = new Image();
+                              img.style.width = "238px"
+                              img.style.height = "238px"
+                                img.onload=function() {
+                                    $("#images").append(img); };
+                                img.onerror=imageNotFound;
+                                img.src=data.responseData.results[x].url;
+                                */
+                                
                         }     
                         
 					}	
@@ -927,6 +941,7 @@ function toggleCity(cityName) {
     
     drawLegend();
     drawChartMenus();
+    drawImages();
     
     //Filter Charts
     for (var i = 0; i < selectedBarCharts.length; i++) {
@@ -936,10 +951,11 @@ function toggleCity(cityName) {
         barYAxes[i].titleShape.style("font-size","18");
     }
     
+    /*
     trendChart.data = 
             dimple.filterData(trendData, "City", selectedCities);
     trendChart.draw(300);
-    trendYaxis.titleShape.style("font-size","18");
+    trendYaxis.titleShape.style("font-size","18");*/
 }
     
 function showInfoTips(){
@@ -958,9 +974,8 @@ function Update() {
     drawMap();
     drawIcons();
     drawBarCharts();
-    //drawTrendChart();
     drawTwitterFeed(edmontonID);
-    drawImages("edmonton");
+    drawImages();
     drawChartMenus();
     drawLegend();
 }
@@ -1018,6 +1033,11 @@ jQuery.fn.d3Click = function () {
     e.dispatchEvent(evt);
   });
 };
+    
+function imageNotFound() {
+    console.log('That image was not found.');
+}
+
 
 });
 });
