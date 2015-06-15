@@ -47,6 +47,7 @@ svg { position:relative; margin-top:20px; z-index: 1; }
     position:absolute;
     z-index: 10;
     width: 30px;
+    height: 450px;
 }
 
 #images {
@@ -108,7 +109,7 @@ svg { position:relative; margin-top:20px; z-index: 1; }
     line-height: 1;
     font-family: sans-serif;
     font-weight: normal;
-    font-size: 14px;
+    font-size: 15px;
     padding: 6px;
     background: #777777;
     color: #fff;

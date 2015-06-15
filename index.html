@@ -15,9 +15,8 @@
 
 <body>
 <!--<div id="twitterFeed"><a class="twitter-timeline" href="https://twitter.com/search?q=%23YEG%20OR%20%23Calgary" data-widget-id="597846961694183424">Tweets about #YEG OR #Calgary</a></div> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>-->
-<script> var edmontonID = "597846961694183424", woodbuffaloID = "605893721658302464"; </script>
 <div class="title">Live Alberta</div>
-<div id="twitterFeed"><a class="twitter-timeline"  id="twitter">Tweets</a></div>
+<div id="twitterFeed"></div>
 <div id="images"></div>
 <!--<div id="barMenu1"></div>-->
     <div id="barMenu2"></div>
@@ -47,6 +46,19 @@ var width = 1400,
     iconInset = width * 0.05,
     iconYInset = 140,
     iconSize = 12;
+
+var widgetIDs = {
+    
+    "Edmonton" : "597846961694183424",
+    "Canmore" : "610167781787500544",
+    "Wood Buffalo" : "605893721658302464",
+    "Grande Prairie" : "610215099878346752",
+    "St. Albert" : "610216525400674305",
+    "Red Deer" : "610221833162330112",
+    "Calgary" : "610227283551346688",
+    "Lethbridge" : "610228553158803456",
+    "Medicine Hat" : "610230176731955200",
+}
 
 //IMGS are on a seperate svg element
 var svg = dimple.newSvg("#charts", width, height);  
@@ -134,7 +146,8 @@ var projection = d3.geo.mercator()
     
 //Reference this Array to determine which cities to draw in the charts
 var selectedCities = [barData[0].City, barData[1].City],
-    cityMarkers = {};
+    cityMarkers = {},
+    lastCity = barData[0].City;
 
 //Initialize Tool Tips
 var tipsEnabled = false;
@@ -244,7 +257,17 @@ var barMenuTip = d3.tip()
         content += "<div id=msvg></div>";
         return content;
         });
+    
+var feedTip = d3.tip()
+    .direction('s') 
+    .offset([280,550])
+    .attr('class', 'd3-tip')
+    .html(function(d) {
+        var content = "<div><b>Twitter and Image Feed</b><br>for the last clicked City</div>";
+        return content;
+        });
 
+svg.call(feedTip);
 svg.call(barMenuTip);
 svg.call(cityTip); 
 svg.call(infoTip);
@@ -822,16 +845,24 @@ function drawTrendChart() {
 }
     
 //TWITTER FEED
-function drawTwitterFeed(cityID) {
+function drawTwitterFeed() {
+    $("#twitterFeed").empty();
+    $("#twitter").remove();
+    //$("#twitterFeed").add('<a class="twitter-timeline"  id="twitter" height="350px">Tweets</a>');
+    $("#twitterFeed").html('<a class="twitter-timeline"  id="twitter" height="350px">Tweets</a>');
+    $("#twitter-wjs").remove();
+    $("#twitter").attr("data-widget-id",widgetIDs[lastCity]);
     
     //Initializes twitter widget
     //could updated to include # for all relevant cities
-    !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+    function twit(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}
+    twit(document,"script","twitter-wjs");
     
-    d3.select("#twitter").attr("data-widget-id",cityID);
+    //!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+    
+    $("#twitter").height = "400px";
     d3.select("#twitterFeed")
             .style("width", chartWidth*0.5 + "px")
-            .style("height", 200 + "px")
             .style("top", chartBaseXOffset * 1.1 + "px")
             .style("left", trendChartYOffset + "px");
     /*
@@ -850,17 +881,18 @@ function drawTwitterFeed(cityID) {
 }
     
 function drawImages() {
-    for( y = 0; y <12;y+=1) {
-        var cityName = selectedCities[Math.floor(Math.random() * selectedCities.length)]
+    $("#images").empty();
+    for( y = 0; y <24;y+=4) {
+        var cityName = lastCity;
     $.ajax({
 					url: "http://www.ajax.googleapis.com/ajax/services/search/images?v=1.0&q=" + cityName + " city&start=" + y + "&imgsz=medium",
 					type: "GET",
 					dataType: "jsonp",
 					success: function (data) {
 						  for (x = 0; x < data.responseData.results.length;x++) {
-                              console.log(data)
                               var url = data.responseData.results[x].url
-                              //$("#images").prepend('<div class="imageTitle"> '+cityName+'</div>');
+                              
+                              
                               $("#images").prepend('<img src="' + url + '" style= "width: 238px; height: 238px;" >');
                               
                               //TEST Image and display when verified
@@ -881,7 +913,7 @@ function drawImages() {
     } 
     d3.select("#images")
         .style("width", chartWidth*0.5 + "px")
-        .style("height", 600 + "px")
+        .style("height", 350 + "px")
         .style("top", chartBaseXOffset * 1.1  + "px")
         .style("left", trendChartYOffset + 500 + "px");
      
@@ -938,10 +970,11 @@ function toggleCity(cityName) {
         selectedCities.splice(index, 1);
         d3.select(c).style("fill", "#777");
     }
-    
+    lastCity = cityName;
     drawLegend();
     drawChartMenus();
     drawImages();
+    drawTwitterFeed();
     
     //Filter Charts
     for (var i = 0; i < selectedBarCharts.length; i++) {
@@ -961,10 +994,12 @@ function toggleCity(cityName) {
 function showInfoTips(){
     rankTip.show(legendTitle.node())
     plusIconTip.show(menuG.node())
+    feedTip.show(legendTitle.node())
 }
 
 function hideInfoTips(){
     rankTip.hide();
+    feedTip.hide();
     infoIconTip.hide();
     plusIconTip.hide();
 }
@@ -974,8 +1009,8 @@ function Update() {
     drawMap();
     drawIcons();
     drawBarCharts();
-    drawTwitterFeed(edmontonID);
-    drawImages();
+    drawTwitterFeed();
+    drawImages(lastCity);
     drawChartMenus();
     drawLegend();
 }
