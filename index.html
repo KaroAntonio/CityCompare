@@ -8,18 +8,19 @@
 <script src="http://d3js.org/topojson.v1.min.js"></script>
 <script src="d3.slider.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<link rel="stylesheet" href="jquery.fancybox.css" type="text/css"/>
+<script type="text/javascript" src="jquery.fancybox.pack.js"></script>
 <link rel="stylesheet" type="text/css" href="style.css">
 <link rel="stylesheet" type="text/css" href="d3.slider.css">
+    
 <title>Live Alberta</title>
 </head>
 
 <body>
-<!--<div id="twitterFeed"><a class="twitter-timeline" href="https://twitter.com/search?q=%23YEG%20OR%20%23Calgary" data-widget-id="597846961694183424">Tweets about #YEG OR #Calgary</a></div> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>-->
 <div class="title">Live Alberta</div>
 <div id="twitterFeed"></div>
 <div id="images"></div>
-<!--<div id="barMenu1"></div>-->
-    <div id="barMenu2"></div>
+<div id="barMenu2"></div>
 <div id="trendMenu1"></div> 
 <div id="charts">
 <script>
@@ -285,14 +286,6 @@ showInfoTips();
 infoIconTip.show(infoG.node())
     
 window.onresize = function(event) {
-    /*
-    drawMap();
-    drawIcons();
-    drawBarCharts();
-    drawTrendChart();
-    drawChartMenus();
-    drawLegend();
-    */
 };
     
 function mapCity(cityName, c) {
@@ -374,8 +367,6 @@ function drawIcons() {
                 }
                 })
             .on("mouseover", function(d) {
-                //barMenuTip.show();
-                //drawChartMenus();
                 d3.select(this).attr("stroke", '#454545'); 
                 menuG.selectAll("text").attr('class', 'iconHover'); })
             .on("mouseout", function(d) {
@@ -396,8 +387,6 @@ function drawChartMenus() {
         var barMenu1 = d3.select("#barMenu1")
             .style("top", 20 + "px")
             .style("left", 20 + "px")
-            //.style("top", menuYoffset * 1.36 + "px")
-            //.style("left", menuXoffset * 1.12 + "px")
             .append("select")
             .on("change", function() {
                 //SET new Value
@@ -436,43 +425,7 @@ function drawChartMenus() {
         d3.select("#trendMenu1")
             .selectAll("select")
             .remove();
-        /*
-        var trendMenu1 = d3.select("#trendMenu1")
-            .style("top", menuYoffset * 1.19 + "px")
-            .style("left", menuXoffset * 1.12 + "px")
-            .append("select")
-            .on("change", function() {
-                //SET new Value
-                selectedTrendChart = 
-                    this.options[this.selectedIndex].__data__;
-                //Draw Bar Charts
-                Update();
-            })
-            .selectAll("option")
-            .data(trendChartTypes)
-            .enter()
-            .append("option")
-            .attr("value", function (d) {
-                return d;
-            })
-            .text(function (d) {
-                return d;
-            })
-            .property("selected", function(d){ return d === selectedTrendChart; }); */
     }
-    /*
-    if (trendTitle != null)
-        trendTitle.remove();
-    trendTitle = svg.append("g")
-                .selectAll("text")
-                .data(["Toggle Trend Chart"])
-                .enter()
-                .append("text")
-                .attr("x", menuXoffset * 1.1)
-                .attr("y", menuYoffset * 1.1)
-                .attr('class', 'menuTitle')
-                .text(function (d) { return d; }); 
-    */
     
   
     if (addBarButton != null)
@@ -567,7 +520,6 @@ function drawMap() {
        .enter()
        .append("circle")
        .attr("cx", function(d) {
-                //Is this a good place to put this?
         
                 mapCity(d.properties["marker-symbol"],this);
                 
@@ -858,26 +810,11 @@ function drawTwitterFeed() {
     function twit(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}
     twit(document,"script","twitter-wjs");
     
-    //!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
-    
     $("#twitter").height = "400px";
     d3.select("#twitterFeed")
             .style("width", chartWidth*0.5 + "px")
             .style("top", chartBaseXOffset * 1.1 + "px")
             .style("left", trendChartYOffset + "px");
-    /*
-    if (twitterFeed != null)
-        twitterFeed.remove();
-    
-    //This appends an html div into the svg, nested in on top, all html can go into the html tag
-    twitterFeed = svg.append("foreignObject")
-        .attr("width", 480)
-        .attr("height", 500)
-        .attr("x", chartBaseXOffset + 60)
-        .attr("y", trendChartYOffset)
-        .append("xhtml:div")
-        .attr('class', 'twitterFeed')
-        .html("<a class=&quottwitter-timeline&quot href=&quothttps://twitter.com/search?q=%23Edmonton&quot data-widget-id=&quot597846961694183424&quot>Tweets about #Edmonton</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+&quot://platform.twitter.com/widgets.js&quot;fjs.parentNode.insertBefore(js,fjs);}}(document,&quotscript&quot,&quottwitter-wjs&quot);&lt/script>");*/
 }
     
 function drawImages() {
@@ -885,7 +822,7 @@ function drawImages() {
     for( y = 0; y <24;y+=4) {
         var cityName = lastCity;
     $.ajax({
-					url: "http://www.ajax.googleapis.com/ajax/services/search/images?v=1.0&q=" + cityName + " city&start=" + y + "&imgsz=medium",
+					url: "http://www.ajax.googleapis.com/ajax/services/search/images?v=1.0&q=" + cityName + " city&start=" + y ,
 					type: "GET",
 					dataType: "jsonp",
 					success: function (data) {
@@ -893,19 +830,8 @@ function drawImages() {
                               var url = data.responseData.results[x].url
                               
                               
-                              $("#images").prepend('<img src="' + url + '" style= "width: 238px; height: 238px;" >');
+                              $("#images").prepend('<a rel="group" class="fancybox" href="' + url + '"><img src="' + url + '" alt="" style= "width: 238px; height: 238px;" ></a>');
                               
-                              //TEST Image and display when verified
-                              /*
-                              var img = new Image();
-                              img.style.width = "238px"
-                              img.style.height = "238px"
-                                img.onload=function() {
-                                    $("#images").append(img); };
-                                img.onerror=imageNotFound;
-                                img.src=data.responseData.results[x].url;
-                                */
-                                
                         }     
                         
 					}	
@@ -918,6 +844,12 @@ function drawImages() {
         .style("left", trendChartYOffset + 500 + "px");
      
 }
+    
+$(document).ready(function() {
+		$(".fancybox").fancybox({
+                        openEffect	: 'elastic',
+    	                closeEffect	: 'elastic'});
+	});
     
 function rankCities() {
     //Rank cities by their aggregate optimality across bar charts
@@ -983,12 +915,6 @@ function toggleCity(cityName) {
         barXAxes[i].shapes.selectAll("text").remove(); 
         barYAxes[i].titleShape.style("font-size","18");
     }
-    
-    /*
-    trendChart.data = 
-            dimple.filterData(trendData, "City", selectedCities);
-    trendChart.draw(300);
-    trendYaxis.titleShape.style("font-size","18");*/
 }
     
 function showInfoTips(){
