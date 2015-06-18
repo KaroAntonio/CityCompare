@@ -1,6 +1,11 @@
 html, body { margin:0; padding:0; overflow: scroll; width: 100%}
 
-svg { position:relative; margin-top:20px; z-index: 1; }
+svg { 
+    align-content: center;
+    position:relative; 
+    margin-top: 20px; 
+    z-index: 1; 
+}
 
 .title {
     position: fixed;
@@ -17,10 +22,16 @@ svg { position:relative; margin-top:20px; z-index: 1; }
     z-index: 20;
 }
 
-#charts {
-    position: relative;
+#container {
+    margin-top: 0px;
+    position: absolute;
+    padding: auto;
+    right: auto ;
+    /*
+    
     left: 0%;
     top: 0%;
+    */
     text-anchor: center;
     z-index: 5;
 }
@@ -84,16 +95,14 @@ svg { position:relative; margin-top:20px; z-index: 1; }
     text-align: left;
 } 
 
-#barMenu1 {
+#barMenu {
     position: relative;
     z-index: 10;
     width: 10px;
     height: 0px;
-    float:left;
 }
 
-
-#barMenu2 {
+#feedMenu {
     position: relative;
     z-index: 10;
     width: 10px;
@@ -117,9 +126,11 @@ svg { position:relative; margin-top:20px; z-index: 1; }
     border-radius: 2px;
     pointer-events: none;
     z-index: 10;
+    width: 500;
 }
 
 /* Creates a small triangle extender for the tooltip */
+/*
 .d3-tip:after {
     box-sizing: border-box;
     display: inline;
@@ -132,7 +143,6 @@ svg { position:relative; margin-top:20px; z-index: 1; }
     pointer-events: none;
 }
 
-/* Northward tooltips */
 .d3-tip.n:after {
   content: "\25BC";
   margin: -1px 0 0 0;
@@ -141,7 +151,6 @@ svg { position:relative; margin-top:20px; z-index: 1; }
   text-align: center;
 }
 
-/* Eastward tooltips */
 .d3-tip.e:after {
   content: "\25C0";
   margin: -4px 0 0 0;
@@ -149,7 +158,6 @@ svg { position:relative; margin-top:20px; z-index: 1; }
   left: -8px;
 }
 
-/* Southward tooltips */
 .d3-tip.s:after {
   content: "\25B2";
   margin: 0 0 1px 0;
@@ -158,13 +166,12 @@ svg { position:relative; margin-top:20px; z-index: 1; }
   text-align: center;
 }
 
-/* Westward tooltips */
 .d3-tip.w:after {
   content: "\25B6";
   margin: -4px 0 0 -1px;
   top: 50%;
   left: 100%;
-}
+}*/
 
 /* Slider */
 .axis {

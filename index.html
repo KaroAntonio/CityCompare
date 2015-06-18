@@ -18,28 +18,27 @@
 
 <body>
 <div class="title">Live Alberta</div>
-<div id="twitterFeed"></div>
-<div id="images"></div>
-<div id="barMenu2"></div>
-<div id="trendMenu1"></div> 
-<div id="charts">
+
+<div id="container">
+    <div id="twitterFeed"></div>
+    <div id="images"></div>
+    <div id="feedMenu"></div>
 <script>
-    
-//SET Curser
-document.getElementsByTagName("body")[0].style.cursor = "default";
-    
+        
 var w = window,
     wwidth = w.innerWidth || e.clientWidth || g.clientWidth,
     wheight = w.innerHeight|| e.clientHeight|| g.clientHeight;
     
 var width = 1400,
     height = 838,
+    windowXOffest = Math.max((wwidth - width) / 2,0);
     chartWidth = width * 0.68,
     legendXOffset = width * 0.06,
     legendYOffset = height * 0.1,
     menuXoffset = width * 0.7,
     menuYoffset = height * 0.45,
     chartBaseXOffset = width * 0.28,
+    feedYOffset = height * 0.54,
     barChartYOffset = height * 0.08,
     trendChartYOffset = height * 0.515,
     trendChartYOffset = height * 0.48,
@@ -47,12 +46,15 @@ var width = 1400,
     iconInset = width * 0.05,
     iconYInset = 140,
     iconSize = 12;
+    
+//SET Curser
+document.getElementsByTagName("body")[0].style.cursor = "default"
+document.getElementsByTagName("body")[0].style.width = width + "px";
 
 var widgetIDs = {
-    
     "Edmonton" : "597846961694183424",
     "Canmore" : "610167781787500544",
-    "Wood Buffalo" : "605893721658302464",
+    "Wood Buffalo" : "611584483016482816",
     "Grande Prairie" : "610215099878346752",
     "St. Albert" : "610216525400674305",
     "Red Deer" : "610221833162330112",
@@ -62,7 +64,10 @@ var widgetIDs = {
 }
 
 //IMGS are on a seperate svg element
-var svg = dimple.newSvg("#charts", width, height);  
+var svg = dimple.newSvg("#container", width, height);  
+//Center SVG    
+svg.style("margin-left",windowXOffest + "px")
+    
 d3.slider();
 //Load All data sets asynchronously in a nested callbacks
 d3.tsv("barData.tsv", function (barData) {
@@ -139,7 +144,8 @@ var legendBox,
     barChartTitles,
     infoG,
     menuG,
-    twitterFeed;
+    twitterFeed,
+    feedLabel;
     
 var projection = d3.geo.mercator()
         .scale(width * height * 0.001619)
@@ -254,14 +260,14 @@ var barMenuTip = d3.tip()
     .attr('class', 'd3-tip')
     .html(function(d) {
         var content = "<div class=menuTitle>Add/Remove Bar Charts</div>";
-        content += "<div id=barMenu1></div>";
+        content += "<div id=barMenu></div>";
         content += "<div id=msvg></div>";
         return content;
         });
     
 var feedTip = d3.tip()
     .direction('s') 
-    .offset([280,550])
+    .offset([280,630])
     .attr('class', 'd3-tip')
     .html(function(d) {
         var content = "<div><b>Twitter and Image Feed</b><br>for the last clicked City</div>";
@@ -383,8 +389,8 @@ function drawChartMenus() {
             .attr("width", 240)
             .attr("height", function(){return 22 + selectedBarCharts.length * 22});
     
-        d3.select("#barMenu1").selectAll("select").remove();
-        var barMenu1 = d3.select("#barMenu1")
+        d3.select("#barMenu").selectAll("select").remove();
+        var barMenu = d3.select("#barMenu")
             .style("top", 20 + "px")
             .style("left", 20 + "px")
             .append("select")
@@ -796,6 +802,59 @@ function drawTrendChart() {
     trendYaxis = yAxis;
 }
     
+//FEEDS Umbrella
+function drawFeeds() {
+    drawImageFeed();
+    drawTwitterFeed();
+    
+    //Draw Feed Label
+    if (feedLabel != null)
+        feedLabel.remove();
+    
+    feedLabel = svg.append("g")
+            .attr("width", 200)
+            .attr("height", 50)
+            .selectAll("text")
+            .data(["Feed + Images for "])
+            .enter()
+            .append("text")
+            .attr("x", width /2 - 280 + "px")
+            .attr("y", height / 2 - 20 + "px")
+            .attr("fill", "#000")
+            .attr('class', 'legendTitle')
+            .text(function (d) {
+                return d; });
+    
+    //Draw Feed Menu
+    d3.select("#feedMenu").selectAll("select").remove();
+        var feedMenu = d3.select("#feedMenu")
+            .style("top", height / 2 + 5 + "px")
+            .style("left", width /2 - 110 + windowXOffest + "px")
+            .append("select")
+            .on("change", function() {
+                //SET new Value
+                lastCity = 
+                    this.options[this.selectedIndex].__data__;
+                drawImageFeed();
+                drawTwitterFeed();
+            })
+            .selectAll("option")
+            .data(function() {
+                return Object.keys(widgetIDs);
+            })
+            .enter()
+            .append("option")
+            .attr("value", function (d) {
+                return d;
+            })
+            .text(function (d) {
+                return d;
+            })
+            .property("selected", function(d){ 
+                return d === lastCity; });
+
+}
+    
 //TWITTER FEED
 function drawTwitterFeed() {
     $("#twitterFeed").empty();
@@ -813,16 +872,16 @@ function drawTwitterFeed() {
     $("#twitter").height = "400px";
     d3.select("#twitterFeed")
             .style("width", chartWidth*0.5 + "px")
-            .style("top", chartBaseXOffset * 1.1 + "px")
-            .style("left", trendChartYOffset + "px");
+            .style("top", feedYOffset + "px")
+            .style("left", trendChartYOffset + windowXOffest + "px");
 }
     
-function drawImages() {
+function drawImageFeed() {
     $("#images").empty();
     for( y = 0; y <24;y+=4) {
         var cityName = lastCity;
     $.ajax({
-					url: "http://www.ajax.googleapis.com/ajax/services/search/images?v=1.0&q=" + cityName + " city&start=" + y ,
+					url: "http://www.ajax.googleapis.com/ajax/services/search/images?v=1.0&q=" + cityName + " city&imgsz=medium&start=" + y ,
 					type: "GET",
 					dataType: "jsonp",
 					success: function (data) {
@@ -840,8 +899,8 @@ function drawImages() {
     d3.select("#images")
         .style("width", chartWidth*0.5 + "px")
         .style("height", 350 + "px")
-        .style("top", chartBaseXOffset * 1.1  + "px")
-        .style("left", trendChartYOffset + 500 + "px");
+        .style("top", feedYOffset  + "px")
+        .style("left", trendChartYOffset + 500 + windowXOffest + "px");
      
 }
     
@@ -905,13 +964,13 @@ function toggleCity(cityName) {
     lastCity = cityName;
     drawLegend();
     drawChartMenus();
-    drawImages();
-    drawTwitterFeed();
+    drawFeeds();
     
     //Filter Charts
     for (var i = 0; i < selectedBarCharts.length; i++) {
         barCharts[i].data = filterBarData(selectedBarCharts[i]);
-        barCharts[i].draw(300);
+        if (index == -1) barCharts[i].draw(300);
+        else barCharts[i].draw(0);
         barXAxes[i].shapes.selectAll("text").remove(); 
         barYAxes[i].titleShape.style("font-size","18");
     }
@@ -935,8 +994,7 @@ function Update() {
     drawMap();
     drawIcons();
     drawBarCharts();
-    drawTwitterFeed();
-    drawImages(lastCity);
+    drawFeeds();
     drawChartMenus();
     drawLegend();
 }
