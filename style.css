@@ -15,6 +15,7 @@ svg {
     color: #fff;
     pointer-events: none;
     text-align: center;
+    background-color: grey;
     background-image: url("plainsky.jpg");
     background-size:auto auto;
     background-position:center 1030px;
