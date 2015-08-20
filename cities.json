@@ -1,0 +1,140 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#7E7E7E",
+        "marker-size": "medium",
+        "marker-symbol": "Edmonton"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -113.5162353515625,
+          53.54357161755108
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#7E7E7E",
+        "marker-size": "medium",
+        "marker-symbol": "Calgary"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -114.08203125,
+          51.04830113331224
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#7E7E7E",
+        "marker-size": "medium",
+        "marker-symbol": "Red Deer"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -113.829345703125,
+          52.288322586002984
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#7E7E7E",
+        "marker-size": "medium",
+        "marker-symbol": "Canmore"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -115.34271240234374,
+          51.086272518565515
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#7E7E7E",
+        "marker-size": "medium",
+        "marker-symbol": "Lethbridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -112.85980224609375,
+          49.70849646404114
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#7E7E7E",
+        "marker-size": "medium",
+        "marker-symbol": "St. Albert"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -113.66455078125,
+          53.63649628489509
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#7E7E7E",
+        "marker-size": "medium",
+        "marker-symbol": "Wood Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -111.37939453125,
+          56.71656572651468
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#7E7E7E",
+        "marker-size": "medium",
+        "marker-symbol": "Medicine Hat"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -110.687255859375,
+          50.04302974380058
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#7E7E7E",
+        "marker-size": "medium",
+        "marker-symbol": "Grande Prairie"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.795166015625,
+          55.16004309876882
+        ]
+      }
+    }
+  ]
+}

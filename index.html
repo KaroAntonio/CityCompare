@@ -1,0 +1,1070 @@
+<!doctype html>
+<meta charset="utf-8">
+<html>
+<head>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<script src="http://dimplejs.org/dist/dimple.v2.1.2.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script src="d3.slider.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<link rel="stylesheet" href="jquery.fancybox.css" type="text/css"/>
+<script type="text/javascript" src="jquery.fancybox.pack.js"></script>
+<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="stylesheet" type="text/css" href="d3.slider.css">
+    
+<title>Live Alberta</title>
+</head>
+
+<body>
+<div class="title">Live Alberta</div>
+
+<div id="container">
+    <div id="twitterFeed"></div>
+    <div id="images"></div>
+    <div id="feedMenu"></div>
+<script>
+        
+var w = window,
+    wwidth = w.innerWidth,
+    wheight = w.innerHeight;
+    
+var width = 1400,
+    height = 838,
+    windowXOffest = Math.max((wwidth - width) / 2,0);
+    chartWidth = width * 0.68,
+    legendXOffset = width * 0.06,
+    legendYOffset = height * 0.1,
+    menuXoffset = width * 0.7,
+    menuYoffset = height * 0.45,
+    chartBaseXOffset = width * 0.28,
+    feedYOffset = height * 0.54,
+    barChartYOffset = height * 0.08,
+    trendChartYOffset = height * 0.515,
+    trendChartYOffset = height * 0.48,
+    barChartHeight = height * 0.355,
+    iconInset = width * 0.05,
+    iconYInset = 140,
+    iconSize = 12;
+    
+//SET Curser
+document.getElementsByTagName("body")[0].style.cursor = "default"
+document.getElementsByTagName("body")[0].style.width = width + "px";
+
+var widgetIDs = {
+    "Edmonton" : "597846961694183424",
+    "Canmore" : "610167781787500544",
+    "Wood Buffalo" : "611584483016482816",
+    "Grande Prairie" : "610215099878346752",
+    "St. Albert" : "610216525400674305",
+    "Red Deer" : "610221833162330112",
+    "Calgary" : "610227283551346688",
+    "Lethbridge" : "610228553158803456",
+    "Medicine Hat" : "610230176731955200",
+}
+
+//IMGS are on a seperate svg element
+var svg = dimple.newSvg("#container", width, height);  
+//Center SVG    
+svg.style("margin-left",windowXOffest + "px")
+    
+d3.slider();
+//Load All data sets asynchronously in a nested callbacks
+d3.tsv("barData.tsv", function (barData) {
+d3.tsv("rentTrends.tsv", function (rentTrends) {
+d3.tsv("housingTrends.tsv", function (housingTrends) {
+d3.json("cities.json", function(cities) {
+d3.json("alberta.json", function(alberta) {
+
+var handles = [],
+    trendDatasets = [
+        rentTrends,
+        housingTrends
+    ],
+    trendData = trendDatasets[0],
+    optimumValues = {},
+    selectedTrendChart = Object.keys(trendData[0])[2],
+    selectedBarCharts = [
+    Object.keys(barData[0])[1],
+    Object.keys(barData[0])[2],
+    Object.keys(barData[0])[3]],
+    selectedBarChart = selectedBarCharts[0]; //the bar chart currently selected in the drop down menu
+var numBarCharts = selectedBarCharts.length,
+    numCities = barData.length,
+    trendChartTypes = function() {
+        var types = [];
+        for (var i = 0; i < trendDatasets.length; i++)
+            types.push(Object.keys(trendDatasets[i][0])[2])
+        return types;},
+    barChartTypes = 
+    Object.keys(barData[0]).slice(1, Object.keys(barData[0]).length);
+    barChartWidth = chartWidth/numBarCharts;
+
+var trendChart;
+var selectableBarCharts = [],
+    barCharts = []; //An Array containing all dimple bar charts
+var barXAxes = [],
+    barYAxes = [],
+    trendYaxis;
+var chartData;
+    
+//FORMAT Trend Data
+var format = d3.time.format("%y-%b");
+
+for (var j = 0; j < trendDatasets.length; j++) {
+    var data = trendDatasets[j];
+    for (var i = 0; i < data.length; i++) {
+        data[i].Month = format.parse(data[i].Month);
+    }
+}
+  
+for (var i = 0; i < barChartTypes.length; i++) {
+    var chart = barChartTypes[i];
+    var ic = selectedBarCharts
+                    .indexOf(chart);
+    if (ic == -1) {
+        selectableBarCharts.push(chart)
+    }
+}
+
+var initialized = false;
+var menuVisible = false;
+var showInitialTips = true;
+var addBarButton;
+var legendBox,
+    legendTitle,
+    legendCircles,
+    legendCircleBacks,
+    legendCities,
+    toggleTitle,
+    trendTitle,
+    barTitle,
+    barList,
+    listButtons,
+    barChartTitles,
+    infoG,
+    menuG,
+    twitterFeed,
+    feedLabel;
+    
+var projection = d3.geo.mercator()
+        .scale(width * height * 0.001619)
+        .translate([width * 2.87, height * 3.08]);
+    
+//Reference this Array to determine which cities to draw in the charts
+var selectedCities = [barData[0].City, barData[1].City],
+    cityMarkers = {},
+    lastCity = barData[0].City;
+
+//Initialize Tool Tips
+var tipsEnabled = false;
+var infoTip = d3.tip()
+    .direction('w') 
+    .offset([50 ,-10])
+    .attr('class', 'd3-tip')
+    .html(function(d) {
+        return "<strong>Live Alberta</strong><br>Compare cities in Alberta to find the one best suited to YOU<br><strong>Hand Crafted by</strong><br>Karo Castro-Wunsch<br>David Buss<br><strong>Data Curated from</strong><br>http://www.currentresults.com/Weather/Canada/Alberta/sunshine-annual-average.php<br>http://www.city-data.com<br>http://www.albertacanada.com/SP-CS_2010-alberta-spatial-price-survey.pdf";
+        });
+    
+var plusIconTip = d3.tip()
+    .direction('w') 
+    .offset([0, -10])
+    .attr('class', 'd3-tip')
+    .html(function(d) {
+        return "<b>Click to Add and Remove Bar Charts</b>";
+        });
+    
+var infoIconTip = d3.tip()
+    .direction('w') 
+    .offset([0, -10])
+    .attr('class', 'd3-tip')
+    .html(function(d) {
+        return "<b>Click to see Tips</b>";
+        });
+
+var rankTip = d3.tip()
+    .direction('e') 
+    .offset([0, 10])
+    .attr('class', 'd3-tip')
+    .html(function(d) {
+        return "<b>Cities are Ranked According to Optimality Preferences</b><br>Set Preferences by adjusting the optimality pointer <br>on the bar chart Y axes.";
+        });
+    
+var pointerTip = d3.tip()
+    .direction('e') 
+    .offset([10,0])
+    .attr('class', 'd3-tip')
+    .html(function(d) {
+        return "Optimality Pointer";
+        });
+        
+var cityTip = d3.tip()
+    .direction(function(d) {
+        if (Object.keys(d).length == 3) return 'e';
+        else return 'w';
+    }) 
+    .offset(function(d) {
+        if (Object.keys(d).length == 3) return [0,10];
+        else return [0,-10];
+    })
+    .attr('class', 'd3-tip')
+    .html(function(d) {
+        //DISPLAY appropriate values
+        var city;
+        if (d.xValue != null) {
+            //Tricky way of determining if 
+            //the tooltip is on trend or bar chart
+            var isBar = 
+                d.seriesShapes[0][0].classList[1] == "dimple-bar";
+            if (isBar) {
+                city = d.xValue;
+            }
+            else {
+                city = d.seriesValue[0];
+            }
+        }
+        else 
+            city = d.properties["marker-symbol"];
+        
+        var cityData;
+        for (var i = 0; i < numCities; i++) {
+            if (barData[i].City == city) {
+                cityData = barData[i];
+            }
+        }
+        
+        var content = "<span><strong>" + city + "</strong>";
+        if (!isBar) {
+            for (var i = 1; 
+                 i < Object.keys(barData[0]).length; 
+                 i++) {
+                var key = Object.keys(barData[0])[i];
+                var value = cityData[Object.keys(barData[0])[i]]
+                content += "<br>" + key + ": " + value;
+                /*
+                if ((selectedCities.indexOf(city) == -1) ||
+                   (value != "") &&
+                   (selectedBarCharts.indexOf(key) == -1))
+                    content += "<br>" + key + ": " + value;
+                    */
+            }
+        }
+        content += "<span>";
+        
+        return content;
+    });
+    
+var barMenuTip = d3.tip()
+    .direction('w') 
+    .offset([-0,-10])
+    .attr('class', 'd3-tip')
+    .html(function(d) {
+        var content = "<div class=menuTitle>Add/Remove Bar Charts</div>";
+        content += "<div id=barMenu></div>";
+        content += "<div id=msvg></div>";
+        return content;
+        });
+    
+var feedTip = d3.tip()
+    .direction('s') 
+    .offset([280,630])
+    .attr('class', 'd3-tip')
+    .html(function(d) {
+        var content = "<div><b>Twitter and Image Feed</b><br>for the last clicked City</div>";
+        return content;
+        });
+
+svg.call(feedTip);
+svg.call(barMenuTip);
+svg.call(cityTip); 
+svg.call(infoTip);
+svg.call(infoIconTip);
+svg.call(plusIconTip)
+svg.call(rankTip);
+svg.call(pointerTip);
+document.onclick = function() {
+    hideInfoTips();
+}
+
+//Draw All Elements (Order matters)
+Update();
+showInfoTips();
+infoIconTip.show(infoG.node())
+    
+window.onresize = function(event) {
+};
+    
+function mapCity(cityName, c) {
+    //Map city names to their markers
+    cityMarkers[cityName] = c;
+}
+    
+function drawIcons() {
+    var backgroundColor = "#eee";
+    
+    infoG = svg.append("g");
+    menuG = svg.append("g");
+    
+    //Info/Help Icon
+    infoG.selectAll("circle")
+        .remove();
+    infoG.selectAll("text")
+        .remove();
+    
+    //INFO TIP
+    var i = infoG.selectAll("text")
+            .data(["i"])
+            .enter()
+            .append("text")
+            .attr("x", width - iconInset + 48)
+            .attr("y", iconYInset + 8)
+            .attr('class', 'icon')
+            .attr("fill", backgroundColor)
+            .text(function (d) { return d; });
+                 
+    var circle = infoG.append("circle")
+            .attr("cx", width - iconInset + 50)
+            .attr("cy", iconYInset )
+            .attr("r", iconSize)
+            .attr("stroke", backgroundColor)
+            .attr("stroke-width", 2)
+            .attr("fill", 'rgba(255,255,255, 0)')
+            .on("click", function() {
+                
+                })
+            .on("mouseover", function(d) {
+                showInfoTips();
+                infoTip.show();
+                d3.select(this).attr("stroke", '#454545'); 
+                infoG.selectAll("text").attr('class', 'iconHover'); })
+            .on("mouseout", function(d) {
+                infoTip.hide();
+                hideInfoTips();
+                d3.select(this).attr("stroke", backgroundColor); 
+                infoG.selectAll("text").attr('class', 'icon'); });
+    
+    //BAR MENU TIP
+    var plus = menuG.selectAll("text")
+            .data(["+"])
+            .enter()
+            .append("text")
+            .attr("x", width - iconInset + 41)
+            .attr("y", 108)
+            .attr('class', 'icon')
+            .style('font-size', '30')
+            .attr("fill", backgroundColor)
+            .text(function (d) { return d; });
+                 
+    var circle = menuG.append("circle")
+            .attr("cx", width - iconInset + 50 )
+            .attr("cy", 100 )
+            .attr("r", iconSize)
+            .attr("stroke", backgroundColor)
+            .attr("stroke-width", 2)
+            .attr("fill", 'rgba(255,255,255, 0)')
+            .on("click", function() {
+                if (!menuVisible) {
+                    barMenuTip.show();
+                    drawChartMenus();
+                    menuVisible = true;
+                } else {
+                    barMenuTip.hide();
+                    menuVisible = false;
+                }
+                })
+            .on("mouseover", function(d) {
+                d3.select(this).attr("stroke", '#454545'); 
+                menuG.selectAll("text").attr('class', 'iconHover'); })
+            .on("mouseout", function(d) {
+                //barMenuTip.hide();
+                d3.select(this).attr("stroke", backgroundColor); 
+                menuG.selectAll("text").attr('class', 'icon'); });
+    
+}
+
+function drawChartMenus() {
+        //Menu SVG
+        d3.select("#msvg").selectAll("svg").remove();
+        var msvg = d3.select("#msvg").append("svg")
+            .attr("width", 240)
+            .attr("height", function(){return 22 + selectedBarCharts.length * 22});
+    
+        d3.select("#barMenu").selectAll("select").remove();
+        var barMenu = d3.select("#barMenu")
+            .style("top", 20 + "px")
+            .style("left", 20 + "px")
+            .append("select")
+            .on("change", function() {
+                //SET new Value
+                selectedBarChart = 
+                    this.options[this.selectedIndex].__data__;
+            })
+            .selectAll("option")
+            .data(function() {
+                selectableBarCharts = [];
+                for (var i = 0; i < barChartTypes.length; i++) {
+                    var chart = barChartTypes[i];
+                    var ic = selectedBarCharts
+                                    .indexOf(chart);
+                    if (ic == -1) {
+                        selectableBarCharts.push(chart)
+                    }
+                }
+                
+                return selectableBarCharts;
+            })
+            .enter()
+            .append("option")
+            .attr("value", function (d) {
+                return d;
+            })
+            .text(function (d) {
+                return d;
+            })
+            .property("selected", function(d){ 
+                selectedBarChart = selectableBarCharts[0];
+                return d === selectableBarCharts[0]; });
+    
+    if (!initialized) {
+        initialized = true;
+        
+        d3.select("#trendMenu1")
+            .selectAll("select")
+            .remove();
+    }
+    
+  
+    if (addBarButton != null)
+        addBarButton.remove();
+    
+    addBarButton = msvg.append("g")
+            .selectAll("text")
+            .data(["+"])
+            .enter()
+            .append("text")
+            .attr('class', 'menuButton')
+            .attr('fill', '#999')
+            .attr("x", 0)
+            .attr("y", 20)
+            .text(function (d) { return d; })
+            .on("click", function() { 
+                if (selectableBarCharts.length == 0)
+                    return
+                selectedBarCharts.push(selectedBarChart);
+                Update(); })
+            .on("mouseover", function(d) {
+                 d3.select(this).attr('fill', '#fff'); })
+            .on("mouseout", function(d) {
+                 d3.select(this).attr('fill', '#999'); });
+    
+    if (barList != null)
+        barList.remove();
+    
+    barList = msvg.append("g")
+                .selectAll("text")
+                .data(selectedBarCharts)
+                .enter()
+                .append("text")
+                .attr("fill", "#fff")
+                .attr("x", 20)
+                .attr('class', 'barList')
+                .attr("y", function (d,i) { 
+                    return (40 + (i * 22)); })
+                .text(function (d) { return d; })
+                .on("click", function(d) {
+                        selectedBarCharts.splice(
+                            selectedBarCharts.indexOf(d),1);
+                        Update();
+                            })
+                .on("mouseover", function(d) {
+                     d3.select(this).attr('fill', '#ccc'); })
+                .on("mouseout", function(d) {
+                     d3.select(this).attr('fill', '#fff'); });
+    
+    if (barChartTitles != null)
+        barChartTitles.remove();
+    
+    if (listButtons != null)
+        listButtons.remove();
+    
+    listButtons = msvg.append("g")
+                .selectAll("text")
+                .data(selectedBarCharts)
+                .enter()
+                .append("text")
+                .attr('fill', '#999')
+                .attr("x", 0)
+                .attr('class', 'menuButton')
+                .attr("y", function (d,i) { 
+                    return (44 + (i * 22)); })
+                .text("-")
+                .on("click", function(d) { 
+                    selectedBarCharts.splice(
+                            selectedBarCharts.indexOf(d),1);
+                    Update();})
+                .on("mouseover", function(d) {
+                     d3.select(this).attr('fill', '#fff'); })
+                .on("mouseout", function(d) {
+                     d3.select(this).attr('fill', '#999'); });
+    
+}
+
+//MAP
+//Alberta
+function drawMap() {
+    svg.selectAll("path")
+    .data(alberta.features)
+    .enter()
+    .append("path")
+    .attr("z-index", -1)
+    .attr("fill", "#dfdfdf")
+    .attr("d", d3.geo.path().projection(projection));
+
+    //Cities
+    svg.selectAll("circle")
+       .data(cities.features)
+       .enter()
+       .append("circle")
+       .attr("cx", function(d) {
+        
+                mapCity(d.properties["marker-symbol"],this);
+                
+               return projection([
+                   d.geometry.coordinates[0],
+                   d.geometry.coordinates[1]
+                   ])[0];
+       })
+       .attr("cy", function(d) {
+           return projection([
+               d.geometry.coordinates[0],
+               d.geometry.coordinates[1]
+           ])[1];
+       }) 
+       .attr("r", 7)
+       .style("fill", initColor)
+        .style("stroke", "#fff")
+        .style("stroke-width", 2)
+       .style("opacity", 0.75)
+        .on("mouseover", function(d) {
+
+            cityTip.show(d);
+            d3.select(this).attr("r", 10);
+            d3.select(this).style("opacity", 0.95);
+            })
+        .on("mouseout", function(d) {
+            cityTip.hide(d);
+            d3.select(this).attr("r", 6);
+            d3.select(this).style("opacity", 0.75);
+        })
+        .on("click", function(d) {
+            toggleCity(d.properties["marker-symbol"]);
+        });
+}
+    
+
+function drawLegend() {
+    //Rank Cities
+    rankCities();
+    
+    //Cities Legend
+    if (legendBox != null)
+        legendBox.remove();
+    
+    legendBox = svg.append("rect")
+                .attr("fill", "#aaa")
+                .attr("x", legendXOffset * 0.7)
+                .attr("y", legendYOffset)
+                .attr("width", 180)
+                .attr("height", 33 + (selectedCities.length * 22))
+                .style("z-index", 10);
+    
+    if (legendTitle != null)
+        legendTitle.remove();
+    
+    legendTitle = svg.append("g")
+            .attr("width", 200)
+            .attr("height", 50)
+            .selectAll("text")
+            .data(["Cities Ranked \u2193"])
+            .enter()
+            .append("text")
+            .attr("x", legendXOffset*0.8)
+            .attr("y", legendYOffset * 1.3)
+            .attr("fill", "#fff")
+            .attr('class', 'legendTitle')
+            .text(function (d) {
+                return d; })
+            .on("mouseover", function() {
+                rankTip.show();})
+            .on("mouseout", rankTip.hide);
+    
+    if (legendCircles != null)
+        legendCircles.remove();
+    
+    if (legendCircleBacks != null)
+        legendCircleBacks.remove();
+    
+    legendCircleBacks = svg.append("g")
+                    .selectAll("circle")
+                    .data(selectedCities)
+                    .enter()
+                    .append("circle")
+                    .attr("fill", "#fff")
+                    .attr("opacity", 0.9)
+                    .attr("r", 8)
+                    .attr("stroke", "#fff")
+                    .attr("stroke-width", "2px")
+                    .attr("cx", legendXOffset*0.9 + 10)
+                    .attr("cy", function (d,i) { 
+                        return (legendYOffset * 1.55 - 6 + (i * 22)); })
+                    .attr("width", 200)
+                    .style("z-index", 10);
+    
+    legendCircles = svg.append("g")
+                    .selectAll("circle")
+                    .data(selectedCities)
+                    .enter()
+                    .append("circle")
+                    .attr("fill", cityColor)
+                    .attr("opacity", 0.7)
+                    .attr("r", 8)
+                    .attr("stroke", "#fff")
+                    .attr("stroke-width", "2px")
+                    .attr("cx", legendXOffset*0.9 + 10)
+                    .attr("cy", function (d,i) { 
+                        return (legendYOffset * 1.55 - 6 + (i * 22)); })
+                    .attr("width", 200)
+                    .style("z-index", 10)
+                    .on("click", function(d) {
+                        toggleCity(d);
+                            });
+    
+    if (legendCities != null)
+        legendCities.remove();
+    
+    legendCities = svg.append("g")
+                .attr("width", 200)
+                .attr("height", 50 * selectedCities.length)
+                .selectAll("text")
+                .data(selectedCities)
+                .enter()
+                .append("text")
+                .attr("fill", "#fff")
+                .attr("x", legendXOffset*0.9 + 30)
+                .attr("y", function (d,i) { 
+                    return (legendYOffset * 1.55 + (i * 22)); })
+                .attr('class', 'legend')
+                .text(function (d) { return d; })
+                .on("click", function(d) {
+                        toggleCity(d);
+                            })
+                .on("mouseover", function(d) {
+                     d3.select(this).attr('fill', '#eee'); })
+                .on("mouseout", function(d) {
+                     d3.select(this).attr('fill', '#fff'); });
+    
+    
+}
+
+//BAR CHARTS
+function drawBarCharts() {
+    handles = [];
+    barCharts = [];
+    var buffer = 60;
+    barChartWidth = chartWidth/selectedBarCharts.length - buffer;
+    barXAxes = [];
+    barYAxes = [];
+    for (var i = 0; i < selectedBarCharts.length; i++) {
+        chartData = filterBarData(selectedBarCharts[i]);
+        var chart = new dimple.chart(svg, chartData);
+        var chartXOffset = chartBaseXOffset + ((barChartWidth+buffer) * i) + 60;
+        chart.setBounds(chartXOffset, barChartYOffset, barChartWidth, barChartHeight);
+        var xAxis = chart.addCategoryAxis("x", "City");
+        var yAxis = 
+            chart.addMeasureAxis("y", selectedBarCharts[i]);
+        var bars = chart.addSeries("City", dimple.plot.bar);
+        bars.addEventHandler("click", function (d) {                            toggleCity(d.xValue); });
+        //COLOR by City
+        setChartColors(chart);
+        xAxis.title = "";
+        bars.addEventHandler("mouseover", cityTip.show);
+        bars.addEventHandler("mouseout", cityTip.hide);
+        chart.draw(300);
+        yAxis.titleShape.style("font-size","18"); 
+        xAxis.shapes.selectAll("text").remove(); 
+        barCharts.push(chart);
+        barXAxes.push(xAxis);
+        barYAxes.push(yAxis);
+        
+    }
+    
+    for (var i = 0; i < selectedBarCharts.length; i++){
+        var chartXOffset = chartBaseXOffset + ((barChartWidth+buffer) * i) + 60;
+        drawSlider(chartXOffset, 
+                   barYAxes[i], 
+                   selectedBarCharts[i],
+                    barChartWidth);
+    }
+}
+    
+function drawSlider(chartXOffset, yAxis, chartName, barChartWidth) {
+    var scale = d3.scale.linear()
+            .domain([yAxis._min,yAxis._max])
+            .range([barChartYOffset, barChartHeight + barChartYOffset])
+            .clamp(true);
+    
+    var brush = d3.svg.brush()
+        .y(scale)
+        .extent([0, 0])
+        .on("brush", brushed);
+    
+    var slider = svg.append("g")
+        .attr("class", "slider")
+        .call(brush);
+    
+    slider.selectAll(".extent,.resize")
+        .remove();
+    
+    var guide = slider.append("rect")
+        .attr("fill", "#fff")
+        .attr("y", barChartYOffset)
+        .attr("transform", "translate(" + chartXOffset + "," + 0 + ")")
+        .attr("width", barChartWidth)
+        .attr("height", 2);
+    
+    var handle = slider.append("polygon")
+        .attr("class", "handle")
+        .attr("transform", "translate(" + chartXOffset + "," + 0 + ")")
+        .attr("points", "-10,-5 0,0 -10,5" )
+        .on("mouseover", function() {
+        if(tipsEnabled) pointerTip.show();})
+        .on("mouseout", function() {
+        if(tipsEnabled) pointerTip.hide();});
+    
+    handles.push(handle);
+
+    var extent = [0,0];
+    if (optimumValues.hasOwnProperty(chartName))
+        extent = [yAxis._max - optimumValues[chartName],
+                  yAxis._max - optimumValues[chartName]];
+    slider
+        .call(brush.event)
+        .transition() // gratuitous intro!
+        .duration(0)
+        .call(brush.extent(extent))
+        .call(brush.event);
+    
+    function brushed() {
+        handle.on(true, pointerTip.show);
+        
+        var value = brush.extent()[1];
+        
+        if (d3.event.sourceEvent) { // not a programmatic event
+            value = (scale.invert(d3.mouse(this)[1]));
+            brush.extent([value, value]);
+        }
+        optimumValues[chartName] = yAxis._max - value;
+        
+        drawLegend();
+        handle.attr("transform", "translate("+chartXOffset+"," + scale(value) +")")
+        guide.attr("y", scale(value));
+      
+    }
+}
+    
+//TREND CHART
+function drawTrendChart() {
+    //SET trend data to selected chart
+    for (var i = 0; i < trendDatasets.length; i++) {
+        if (Object.keys(trendDatasets[i][0])[2] ==
+            selectedTrendChart) {
+            trendData = trendDatasets[i];
+        }
+    }
+    
+    chartData = dimple.filterData(trendData, "City", selectedCities);
+    
+    trendChart = new dimple.chart(svg, chartData);
+    trendChart.setBounds(chartBaseXOffset + 60, trendChartYOffset, chartWidth * 0.6, barChartHeight);
+    var x = trendChart.addTimeAxis("x", "Month");
+    x.tickFormat = "%y-%b";
+    x.addOrderRule("Date");
+    var yAxis = trendChart.addMeasureAxis("y", selectedTrendChart);
+    var trends = trendChart.addSeries("City", dimple.plot.line);
+    trends.addEventHandler("click", function (d) {
+        toggleCity(d.seriesValue[0]); });
+    //COLOR by City
+    setChartColors(trendChart);
+    trends.addEventHandler("mouseover", cityTip.show);
+    trends.addEventHandler("mouseout", cityTip.hide);
+    trendChart.draw(300);
+    yAxis.titleShape.style("font-size","18");
+    trendYaxis = yAxis;
+}
+    
+//FEEDS Umbrella
+function drawFeeds() {
+    drawImageFeed();
+    drawTwitterFeed();
+    
+    //Draw Feed Label
+    if (feedLabel != null)
+        feedLabel.remove();
+    
+    feedLabel = svg.append("g")
+            .attr("width", 200)
+            .attr("height", 50)
+            .selectAll("text")
+            .data(["Feed + Images for "])
+            .enter()
+            .append("text")
+            .attr("x", width /2 - 280 + "px")
+            .attr("y", height / 2 - 20 + "px")
+            .attr("fill", "#000")
+            .attr('class', 'legendTitle')
+            .text(function (d) {
+                return d; });
+    
+    //Draw Feed Menu
+    d3.select("#feedMenu").selectAll("select").remove();
+        var feedMenu = d3.select("#feedMenu")
+            .style("top", height / 2 + 5 + "px")
+            .style("left", width /2 - 110 + windowXOffest + "px")
+            .append("select")
+            .on("change", function() {
+                //SET new Value
+                lastCity = 
+                    this.options[this.selectedIndex].__data__;
+                drawImageFeed();
+                drawTwitterFeed();
+            })
+            .selectAll("option")
+            .data(function() {
+                return Object.keys(widgetIDs);
+            })
+            .enter()
+            .append("option")
+            .attr("value", function (d) {
+                return d;
+            })
+            .text(function (d) {
+                return d;
+            })
+            .property("selected", function(d){ 
+                return d === lastCity; });
+
+}
+    
+//TWITTER FEED
+function drawTwitterFeed() {
+    $("#twitterFeed").empty();
+    $("#twitter").remove();
+    //$("#twitterFeed").add('<a class="twitter-timeline"  id="twitter" height="350px">Tweets</a>');
+    $("#twitterFeed").html('<a class="twitter-timeline"  id="twitter" height="350px">Tweets</a>');
+    $("#twitter-wjs").remove();
+    $("#twitter").attr("data-widget-id",widgetIDs[lastCity]);
+    
+    //Initializes twitter widget
+    //could updated to include # for all relevant cities
+    function twit(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}
+    twit(document,"script","twitter-wjs");
+    
+    $("#twitter").height = "400px";
+    d3.select("#twitterFeed")
+            .style("width", chartWidth*0.5 + "px")
+            .style("top", feedYOffset + "px")
+            .style("left", trendChartYOffset + windowXOffest + "px");
+}
+    
+function drawImageFeed() {
+    $("#images").empty();
+    for( y = 0; y <24;y+=4) {
+        var cityName = lastCity;
+    $.ajax({
+					url: "http://www.ajax.googleapis.com/ajax/services/search/images?v=1.0&q=" + cityName + " city&imgsz=medium&start=" + y ,
+					type: "GET",
+					dataType: "jsonp",
+					success: function (data) {
+						  for (x = 0; x < data.responseData.results.length;x++) {
+                              var url = data.responseData.results[x].url
+                              
+                              
+                              $("#images").prepend('<a rel="group" class="fancybox" href="' + url + '"><img src="' + url + '" alt="" style= "width: 238px; height: 238px;" ></a>');
+                              
+                        }     
+                        
+					}	
+				});
+    } 
+    d3.select("#images")
+        .style("width", chartWidth*0.5 + "px")
+        .style("height", 350 + "px")
+        .style("top", feedYOffset  + "px")
+        .style("left", trendChartYOffset + 500 + windowXOffest + "px");
+     
+}
+    
+$(document).ready(function() {
+		$(".fancybox").fancybox({
+                        openEffect	: 'elastic',
+    	                closeEffect	: 'elastic'});
+	});
+    
+function rankCities() {
+    //Rank cities by their aggregate optimality across bar charts
+    var cityOptimality = {};
+    
+    for (var j = 0; j < selectedCities.length; j++) {
+        var cityData;
+        var city = selectedCities[j];
+        
+        for(var k = 0; k < barData.length; k++)
+            if (barData[k]['City'] == city)
+                cityData = barData[k];
+        cityOptimality[city] = 0;
+        var numValues = 0;
+        for (var i = 0; i < selectedBarCharts.length; i++){
+            var chart = selectedBarCharts[i];
+            
+            var optimal = optimumValues[chart];
+            var value = cityData[chart];
+            
+            var valueRange = barYAxes[i]._max - barYAxes[i]._min;
+        
+            var optimality = 1 - Math.abs((value-optimal)/valueRange);
+            if (optimality != 0)
+                numValues++;
+            cityOptimality[city] += optimality;
+        }
+        //Average Optimality over Number of Relevant Values
+        cityOptimality[city] = cityOptimality[city]/numValues
+    }
+    
+    selectedCities.sort(function(a,b) { 
+        return parseFloat(cityOptimality[b]) - parseFloat(cityOptimality[a]) 
+    });
+    
+    
+}
+    
+function toggleCity(cityName) {
+    //CHECK if city is selected
+    //var cityName = d.properties["marker-symbol"];
+    var index = selectedCities.indexOf(cityName);
+    var c = cityMarkers[cityName];
+    //TOGGLE Selection
+    if (index == -1) {
+        selectedCities.push(cityName);
+        d3.select(c).style("fill", cityColor(cityName));
+    }
+    else {
+        selectedCities.splice(index, 1);
+        d3.select(c).style("fill", "#777");
+    }
+    lastCity = cityName;
+    drawLegend();
+    drawChartMenus();
+    drawFeeds();
+    
+    //Filter Charts
+    for (var i = 0; i < selectedBarCharts.length; i++) {
+        barCharts[i].data = filterBarData(selectedBarCharts[i]);
+        if (index == -1) barCharts[i].draw(300);
+        else barCharts[i].draw(0);
+        barXAxes[i].shapes.selectAll("text").remove(); 
+        barYAxes[i].titleShape.style("font-size","18");
+    }
+}
+    
+function showInfoTips(){
+    rankTip.show(legendTitle.node())
+    plusIconTip.show(menuG.node())
+    feedTip.show(legendTitle.node())
+}
+
+function hideInfoTips(){
+    rankTip.hide();
+    feedTip.hide();
+    infoIconTip.hide();
+    plusIconTip.hide();
+}
+    
+function Update() {
+    svg.selectAll("*").remove();
+    drawMap();
+    drawIcons();
+    drawBarCharts();
+    drawFeeds();
+    drawChartMenus();
+    drawLegend();
+}
+    
+function filterBarData(yValue) {
+    
+    data = dimple.filterData(barData, "City", selectedCities);
+    
+    var filteredData = [];
+    for(var j = 0; j < data.length; j++) {
+        var value = data[j]["" + yValue];
+        if (value != "")
+            filteredData.push(data[j]);
+    }
+    
+    return filteredData;
+}
+    
+function initColor(d) {
+    city = d.properties["marker-symbol"];
+    var isSelected = selectedCities.indexOf(city) != -1;
+    
+    if (isSelected) 
+        return cityColor(city);
+    else 
+        return "#777";
+}
+    
+function cityColor(city) {
+    //Return City Specific colors
+    if (city == "Edmonton") return "#CC3399";
+    if (city == "Calgary") return "#FFCC66";
+    if (city == "Red Deer") return "#FDFD63";
+    if (city == "Lethbridge") return "#FF6666";
+    if (city == "Wood Buffalo") return "#9966FF";
+    if (city == "Canmore") return "#99C930";
+    if (city == "St. Albert") return "#339966";
+    if (city == "Grande Prairie") return "#4775FF";
+    if (city == "Medicine Hat") return "#FF85FF";
+    
+}
+    
+function setChartColors(chart) {
+    for (var i = 0; i < numCities; i++ ) {
+        var cityName = barData[i].City;
+        chart.assignColor(cityName, cityColor(cityName), cityColor(cityName), 0.7);
+    }
+}
+    
+jQuery.fn.d3Click = function () {
+  this.each(function (i, e) {
+    var evt = document.createEvent("MouseEvents");
+    evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+
+    e.dispatchEvent(evt);
+  });
+};
+    
+function imageNotFound() {
+    console.log('That image was not found.');
+}
+
+
+});
+});
+});   
+});
+});
+
+</script>
+</div>
+</body>
+</html>

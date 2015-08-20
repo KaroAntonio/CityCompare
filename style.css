@@ -1,0 +1,245 @@
+html, body { margin:0; padding:0; overflow: scroll; width: 100%}
+
+svg { 
+    align-content: center;
+    position:relative; 
+    margin-top: 20px; 
+    z-index: 1; 
+}
+
+.title {
+    position: fixed;
+    margin: 0px;
+    font: 60px sans-serif;
+    width: 100%;
+    color: #fff;
+    pointer-events: none;
+    text-align: center;
+    background-color: grey;
+    background-image: url("plainsky.jpg");
+    background-size:auto auto;
+    background-position:center 1030px;
+    -webkit-font-smoothing: antialiased;
+    z-index: 20;
+}
+
+#container {
+    margin-top: 0px;
+    position: absolute;
+    padding: auto;
+    right: auto ;
+    /*
+    
+    left: 0%;
+    top: 0%;
+    */
+    text-anchor: center;
+    z-index: 5;
+}
+
+.legend {
+    margin: 0px;
+    font: 18px sans-serif;
+    width: auto;
+    color: #ffffff;
+    text-align: left;
+    z-index: 10;
+}
+
+.legendTitle {
+    margin: 0px;
+    font: 20px sans-serif;
+    width: auto;
+    color: #fff;
+    text-align: left;
+    z-index: 10;
+}
+
+#twitterFeed {
+    position:absolute;
+    z-index: 10;
+    width: 30px;
+    height: 450px;
+}
+
+#images {
+    position:absolute;
+    z-index: 10;
+    width: 30px;
+    overflow: scroll;
+}
+
+.imageTitle {
+    font: 20px sans-serif;
+}
+
+.menuTitle {
+    margin: 0px;
+    font: 22px sans-serif;
+    width: auto;
+    pointer-events: none;
+    text-align: left;
+    z-index: 10;
+} 
+
+.menuButton {
+    margin: 0px;
+    font: 30px sans-serif;
+    width: auto;
+    text-align: left;
+} 
+
+.barList {
+    margin: 0px;
+    font: 16px sans-serif;
+    width: auto;
+    text-align: left;
+} 
+
+#barMenu {
+    position: relative;
+    z-index: 10;
+    width: 10px;
+    height: 0px;
+}
+
+#feedMenu {
+    position: relative;
+    z-index: 10;
+    width: 10px;
+}
+
+#trendMenu1 {
+    position: relative;
+    z-index: 10;
+    width: 10px;
+}
+
+.d3-tip {
+    line-height: 1;
+    font-family: sans-serif;
+    font-weight: normal;
+    font-size: 15px;
+    padding: 6px;
+    background: #777777;
+    color: #fff;
+    left: 40px;
+    border-radius: 2px;
+    pointer-events: none;
+    z-index: 10;
+    width: 500;
+}
+
+/* Creates a small triangle extender for the tooltip */
+/*
+.d3-tip:after {
+    box-sizing: border-box;
+    display: inline;
+    font-size: 10px;
+    width: 100%;
+    opacity: 0;
+    line-height: 1;
+    color: #ffffff;
+    position: absolute;
+    pointer-events: none;
+}
+
+.d3-tip.n:after {
+  content: "\25BC";
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+  text-align: center;
+}
+
+.d3-tip.e:after {
+  content: "\25C0";
+  margin: -4px 0 0 0;
+  top: 50%;
+  left: -8px;
+}
+
+.d3-tip.s:after {
+  content: "\25B2";
+  margin: 0 0 1px 0;
+  top: -8px;
+  left: 0;
+  text-align: center;
+}
+
+.d3-tip.w:after {
+  content: "\25B6";
+  margin: -4px 0 0 -1px;
+  top: 50%;
+  left: 100%;
+}*/
+
+/* Slider */
+.axis {
+  font: 10px sans-serif;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.axis .domain {
+  fill: none;
+  stroke: #000;
+  stroke-opacity: .3;
+  stroke-width: 10px;
+  stroke-linecap: round;
+}
+
+.axis .halo {
+  fill: none;
+  stroke: #ddd;
+  stroke-width: 8px;
+  stroke-linecap: round;
+}
+
+.slider .handle {
+    fill: #fff;
+    stroke: #000;
+    opacity: 1;
+    stroke-opacity: .5;
+    stroke-width: 1.25px;
+    z-index: 20;
+}
+
+.slider .handle:hover {
+    fill: #fff;
+    stroke: #000;
+    opacity: 1;
+    stroke-opacity: 1;
+    stroke-width: 1.5px;
+    z-index: 20;
+}
+
+.slider .handle:active {
+    fill: #fff;
+    stroke: #000;
+    opacity: 1;
+    stroke-opacity: 1;
+    stroke-width: 1.75px;
+    z-index: 20;
+}
+
+
+/* Icon */
+.icon {
+    font: 20px sans-serif;
+    fill: #dddddd;
+    z-index: 5;
+    -webkit-user-select: none; /* Chrome/Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none;
+}
+
+.iconHover {
+    font: 21px sans-serif;
+    fill: #454545;
+    z-index: 5;
+    -webkit-user-select: none; /* Chrome/Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none;
+}
